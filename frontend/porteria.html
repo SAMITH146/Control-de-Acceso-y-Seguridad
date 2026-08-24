@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Portería | La Perla S.A.</title>
+    <script>
+        (function() {
+            try {
+                const u = JSON.parse(localStorage.getItem('usuario_activo'));
+                if (!u) {
+                    window.location.replace('index.html');
+                }
+            } catch(e) {
+                window.location.replace('index.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/porteria.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <!-- ==================== HEADER PRINCIPAL ==================== -->
+    <header class="porteria-header">
+        <div class="header-left">
+            <div class="logo-badge">
+                <i class="ph ph-shield-check"></i>
+            </div>
+            <div>
+                <h1 class="logo-title">LA PERLA S.A.</h1>
+                <span class="logo-sub">MÓDULO DE PORTERÍA & SEGURIDAD</span>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <div class="live-clock">
+                <i class="ph ph-clock"></i>
+                <span id="relojPorteria">Cargando hora...</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="operador-badge">
+                <i class="ph ph-user"></i>
+                <div>
+                    <span class="operador-label">ESCOLTA OPERADOR</span>
+                    <strong id="nombreOperador">Operador</strong>
+                </div>
+            </div>
+            <button class="btn-logout" id="btnLogout" title="Cerrar sesión">
+                <i class="ph ph-sign-out"></i> Salir
+            </button>
+        </div>
+    </header>
+
+    <!-- ==================== TABS DE NAVEGACIÓN RÁPIDA ==================== -->
+    <nav class="porteria-nav">
+        <button class="nav-tab active" data-tab="entrada">
+            <i class="ph ph-user-plus"></i>
+            <span>1. Registrar Entrada</span>
+        </button>
+        <button class="nav-tab" data-tab="en-planta">
+            <i class="ph ph-door-open"></i>
+            <span>2. En Planta & Salidas</span>
+            <span class="badge-count" id="badgeEnPlantaCount">0</span>
+        </button>
+        <button class="nav-tab" data-tab="lista-negra">
+            <i class="ph ph-prohibit"></i>
+            <span>3. Consultar Lista Negra</span>
+        </button>
+        <button class="nav-tab" data-tab="mi-turno">
+            <i class="ph ph-clipboard-text"></i>
+            <span>4. Registros de Hoy</span>
+        </button>
+    </nav>
+
+    <!-- ==================== CONTENEDOR PRINCIPAL ==================== -->
+    <main class="porteria-main">
+
+        <!-- ==================== TAB 1: REGISTRAR ENTRADA ==================== -->
+        <section class="tab-content active" id="tab-entrada">
+            
+            <!-- Buscador Rápido -->
+            <div class="card card-search">
+                <div class="search-title">
+                    <i class="ph ph-magnifying-glass-bold"></i>
+                    <h2>Paso 1: Digita el documento de identidad</h2>
+                </div>
+                <div class="search-input-group">
+                    <input type="text" id="inputBuscarCedula" placeholder="Escribe la cédula o documento del visitante..." class="input-cedula-giant" autofocus>
+                    <button class="btn-buscar-giant" id="btnBuscarCedula">
+                        <i class="ph ph-arrow-right-bold"></i> BUSCAR
+                    </button>
+                </div>
+
+                <!-- ALERTA ROJA DE LISTA NEGRA -->
+                <div class="alert-sirena hidden" id="alertaListaNegra">
+                    <div class="sirena-icon"><i class="ph ph-warning-octagon-fill"></i></div>
+                    <div class="sirena-info">
+                        <h3>¡ACCESO DENEGADO! — PERSONA VETADA</h3>
+                        <p id="motivoBloqueoTexto">Esta persona tiene una sanción de seguridad activa y NO puede ingresar a la planta.</p>
+                        <button type="button" class="btn-solicitar-desbloqueo" id="btnSolicitarDesbloqueo" style="margin-top:12px;background:#991b1b;color:#fff;border:none;padding:9px 18px;border-radius:6px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,0.2);" onclick="abrirModalSolicitarDesbloqueoDesdeAlerta()">
+                            <i class="ph ph-paper-plane-tilt-bold"></i> SOLICITAR DESBLOQUEO AL ADMIN
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Ingreso -->
+            <div class="card card-form hidden" id="wrapperFormIngreso">
+                <form id="formIngresoVisitante">
+                    
+                    <div class="form-section-header">
+                        <div class="sec-badge">1</div>
+                        <h3>Datos del Visitante</h3>
+                        <span class="tag-status tag-new hidden" id="tagNuevoVisitante">Visitante Nuevo</span>
+                        <span class="tag-status tag-reg hidden" id="tagRegistradoVisitante">Registrado Anteriormente</span>
+                    </div>
+
+                    <div class="grid-form">
+                        <div class="campo">
+                            <label>Tipo de Documento</label>
+                            <select id="ingresoTipoDoc" class="input-porteria">
+                                <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                <option value="CE">Cédula de Extranjería (CE)</option>
+                                <option value="PASAPORTE">Pasaporte</option>
+                                <option value="PEP">PEP</option>
+                                <option value="PPT">PPT</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>Número de Documento</label>
+                            <input type="text" id="ingresoNumDoc" class="input-porteria" readonly>
+                        </div>
+                        <div class="campo full">
+                            <label>Nombre Completo <span class="req">*</span></label>
+                            <input type="text" id="ingresoNombre" class="input-porteria" placeholder="Escribe nombres y apellidos completos" required>
+                        </div>
+                        <div class="campo">
+                            <label>Teléfono de Contacto</label>
+                            <input type="tel" id="ingresoTelefono" class="input-porteria" placeholder="Ej: 3101234567">
+                        </div>
+                        <div class="campo">
+                            <label>EPS (Salud Ocupacional) <span class="req">*</span></label>
+                            <input type="text" id="ingresoEps" class="input-porteria" placeholder="Ej: Sura, Sanitas, Nueva EPS..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-section-header" style="margin-top: 25px;">
+                        <div class="sec-badge">2</div>
+                        <h3>Destino y Objetos que Ingresa</h3>
+                    </div>
+
+                    <div class="grid-form">
+                        <div class="campo">
+                            <label>Área de Destino <span class="req">*</span></label>
+                            <select id="ingresoArea" class="input-porteria" required>
+                                <option value="">-- Selecciona el área --</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label>Empleado que lo Recibe (Anfitrión) <span class="req">*</span></label>
+                            <select id="ingresoEmpleado" class="input-porteria" required>
+                                <option value="">-- Selecciona el empleado --</option>
+                            </select>
+                        </div>
+                        <div class="campo full">
+                            <label>Equipos / Herramientas / Objetos que Ingresa</label>
+                            <textarea id="ingresoObjetos" class="input-porteria textarea" rows="2" placeholder="Describe los equipos que trae consigo (Ej: Portátil Dell serie XYZ, maleta de herramientas...)"></textarea>
+                        </div>
+                        <div class="campo full">
+                            <label>Observaciones / Motivo de Visita</label>
+                            <input type="text" id="ingresoObservaciones" class="input-porteria" placeholder="Motivo de la visita u observaciones del escolta...">
+                        </div>
+                    </div>
+
+                    <div class="btn-container-submit">
+                        <button type="submit" class="btn-submit-entrada" id="btnGuardarIngreso">
+                            <i class="ph ph-check-circle-bold"></i> AUTORIZAR Y REGISTRAR ENTRADA
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: EN PLANTA & REGISTRAR SALIDAS ==================== -->
+        <section class="tab-content" id="tab-en-planta">
+            <div class="card">
+                <div class="card-top-header">
+                    <div>
+                        <h2><i class="ph ph-door-open"></i> Visitantes Actualmente Dentro de Planta</h2>
+                        <p class="subtitle">Monitorea el tiempo de permanencia y registra las salidas al momento que abandonan las instalaciones.</p>
+                    </div>
+                    <button class="btn-refresh-planta" onclick="cargarVisitasEnPlantaPorteria()">
+                        <i class="ph ph-arrows-clockwise"></i> Actualizar
+                    </button>
+                </div>
+
+                <div class="filter-quick">
+                    <input type="text" id="filtroPlanta" class="input-porteria" placeholder="Filtrar por nombre, cédula o anfitrión..." oninput="filtrarTablaPlanta()">
+                </div>
+
+                <div class="table-responsive">
+                    <table class="porteria-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Visitante</th>
+                                <th>Cédula</th>
+                                <th>EPS</th>
+                                <th>Destino</th>
+                                <th>Anfitrión</th>
+                                <th>Hora Ingreso</th>
+                                <th>Permanencia</th>
+                                <th>Objetos Registrados</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyPlantaPorteria">
+                            <tr><td colspan="10" class="empty">Cargando datos de planta...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: CONSULTAR LISTA NEGRA ==================== -->
+        <section class="tab-content" id="tab-lista-negra">
+            <div class="card">
+                <div class="card-top-header">
+                    <div>
+                        <h2><i class="ph ph-prohibit"></i> Consulta Rápida y Reporte de Sanciones (Lista Negra)</h2>
+                        <p class="subtitle">Verifica si una persona tiene prohibición de acceso o envía un reporte para solicitar su veto al Administrador.</p>
+                    </div>
+                    <button class="btn-refresh-planta" style="background:#b91c1c;color:#fff;" onclick="abrirModalSolicitarBloqueo()">
+                        <i class="ph ph-shield-warning-bold"></i> SOLICITAR BLOQUEO / VETO AL ADMIN
+                    </button>
+                </div>
+
+                <div class="search-input-group" style="padding: 15px 20px;">
+                    <input type="text" id="inputBuscarListaNegraPorteria" class="input-cedula-giant" placeholder="Escribe el documento o nombre a consultar..." onkeypress="if(event.key==='Enter') buscarEnListaNegraPorteria()">
+                    <button class="btn-buscar-giant" onclick="buscarEnListaNegraPorteria()">
+                        <i class="ph ph-magnifying-glass-bold"></i> CONSULTAR
+                    </button>
+                </div>
+
+                <div class="table-responsive" style="padding: 0 20px 20px;">
+                    <table class="porteria-table">
+                        <thead>
+                            <tr>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>Fecha Sanción</th>
+                                <th>Motivo del Bloqueo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyListaNegraPorteria">
+                            <tr><td colspan="5" class="empty">Digita un documento para consultar o haz clic en consultar.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: MI TURNO (REGISTROS DE HOY) ==================== -->
+        <section class="tab-content" id="tab-mi-turno">
+            <div class="card">
+                <div class="card-top-header">
+                    <div>
+                        <h2><i class="ph ph-clipboard-text"></i> Actividad del Día (Hoy)</h2>
+                        <p class="subtitle">Todas las entradas y salidas atendidas en portería durante la jornada.</p>
+                    </div>
+                    <button class="btn-refresh-planta" onclick="cargarMiTurno()">
+                        <i class="ph ph-arrows-clockwise"></i> Actualizar
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="porteria-table">
+                        <thead>
+                            <tr>
+                                <th>Hora Entrada</th>
+                                <th>Hora Salida</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>Área</th>
+                                <th>Anfitrión</th>
+                                <th>Objetos</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyMiTurno">
+                            <tr><td colspan="8" class="empty">Cargando registros del día...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAL: REGISTRAR SALIDA ==================== -->
+    <div class="modal-overlay hidden" id="modalSalidaPorteria">
+        <div class="modal-card">
+            <div class="modal-header-salida">
+                <h3><i class="ph ph-sign-out"></i> Registrar Salida de Portería</h3>
+                <button class="btn-close-modal" onclick="cerrarModalSalida()"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formConfirmarSalidaPorteria" onsubmit="ejecutarSalidaPorteria(event)">
+                <input type="hidden" id="salidaPorteriaIdVisita">
+                <div class="modal-body">
+                    <p class="txt-confirmacion">¿Confirmas la salida del visitante <strong id="salidaPorteriaNombre"></strong>?</p>
+                    
+                    <div class="box-objetos">
+                        <label><i class="ph ph-package"></i> Objetos reportados al ingresar:</label>
+                        <p id="salidaPorteriaObjetos">Ninguno</p>
+                    </div>
+
+                    <div class="campo" style="margin-top: 15px;">
+                        <label>Observaciones de salida (opcional)</label>
+                        <textarea id="salidaPorteriaObs" class="input-porteria textarea" rows="2" placeholder="Ej: Retira equipos completos y sin novedad..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-salida">
+                    <button type="button" class="btn-cancelar-salida" onclick="cerrarModalSalida()">Cancelar</button>
+                    <button type="submit" class="btn-confirmar-salida"><i class="ph ph-check"></i> Confirmar Salida</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: ÉXITO Y ESCARAPELA ==================== -->
+    <div class="modal-overlay hidden" id="modalExitoPase">
+        <div class="modal-card modal-pase">
+            <div class="pase-header">
+                <i class="ph ph-check-circle-fill pase-check"></i>
+                <h2>¡ENTRADA AUTORIZADA!</h2>
+                <p>La Perla S.A. — Control de Acceso</p>
+            </div>
+            <div class="pase-body" id="paseDetalles">
+                <!-- Se llena dinámicamente -->
+            </div>
+            <div class="pase-footer">
+                <button class="btn-print" onclick="window.print()"><i class="ph ph-printer"></i> Imprimir Pase</button>
+                <button class="btn-continuar" onclick="cerrarPaseYContinuar()">Siguiente Visitante <i class="ph ph-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: SOLICITAR DESBLOQUEO ==================== -->
+    <div class="modal-overlay hidden" id="modalSolicitarDesbloqueo">
+        <div class="modal-card" style="max-width:520px;">
+            <div class="modal-header-salida" style="background:linear-gradient(135deg, #1e293b, #0f172a);">
+                <h3><i class="ph ph-lock-key-open"></i> Solicitar Desbloqueo de Visitante</h3>
+                <button class="btn-close-modal" onclick="cerrarModalSolicitarDesbloqueo()"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formSolicitarDesbloqueo" onsubmit="enviarSolicitudDesbloqueo(event)">
+                <input type="hidden" id="solicitudIdListaNegra">
+                <input type="hidden" id="solicitudIdVisitante">
+                <div class="modal-body" style="padding:20px;">
+                    <div style="background:#f8fafc;border-left:4px solid #b91c1c;padding:12px;border-radius:4px;margin-bottom:15px;">
+                        <div style="font-size:0.82rem;color:#64748b;text-transform:uppercase;font-weight:700;">Visitante Sancionado</div>
+                        <div style="font-weight:700;font-size:1.05rem;color:#0f172a;" id="solicitudNombreVisitante">---</div>
+                        <div style="font-size:0.85rem;color:#b91c1c;margin-top:4px;" id="solicitudMotivoBloqueo">Motivo: ---</div>
+                    </div>
+
+                    <div class="campo">
+                        <label style="font-weight:700;color:#1e293b;">Justificación / Razones para solicitar el desbloqueo <span class="req">*</span></label>
+                        <textarea id="solicitudMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Explica detalladamente la razón (Ej: Presentó paz y salvo administrativo y autorización escrita de la Gerencia de Seguridad...)" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-salida" style="padding:15px 20px;background:#f8fafc;">
+                    <button type="button" class="btn-cancelar-salida" onclick="cerrarModalSolicitarDesbloqueo()">Cancelar</button>
+                    <button type="submit" class="btn-confirmar-salida" style="background:#0E773A;"><i class="ph ph-paper-plane-tilt"></i> Enviar a Administración</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: SOLICITAR BLOQUEO / VETO ==================== -->
+    <div class="modal-overlay hidden" id="modalSolicitarBloqueo">
+        <div class="modal-card" style="max-width:520px;">
+            <div class="modal-header-salida" style="background:linear-gradient(135deg, #991b1b, #7f1d1d);">
+                <h3><i class="ph ph-shield-warning"></i> Reportar / Solicitar Veto de Visitante</h3>
+                <button class="btn-close-modal" onclick="cerrarModalSolicitarBloqueo()"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formSolicitarBloqueo" onsubmit="enviarSolicitudBloqueo(event)">
+                <input type="hidden" id="solicitudBloqueoIdVisitante">
+                <div class="modal-body" style="padding:20px;">
+                    <p style="font-size:0.88rem;color:#64748b;margin-bottom:15px;">Este reporte será enviado al Administrador para su revisión e inclusión oficial en la Lista Negra de La Perla S.A.</p>
+
+                    <div class="campo" style="margin-bottom:12px;">
+                        <label style="font-weight:700;color:#1e293b;">Número de Documento (Cédula) <span class="req">*</span></label>
+                        <div style="display:flex;gap:8px;">
+                            <input type="text" id="solicitudBloqueoNumDoc" class="input-porteria" placeholder="Digita la cédula y presiona Enter..." required onblur="autocompletarNombreBloqueo()" onkeypress="if(event.key==='Enter'){event.preventDefault();autocompletarNombreBloqueo();}">
+                            <button type="button" class="btn-primary" style="padding:0 14px;background:#1e293b;" onclick="autocompletarNombreBloqueo()"><i class="ph ph-magnifying-glass"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="campo" style="margin-bottom:12px;">
+                        <label style="font-weight:700;color:#1e293b;">Nombre Completo del Visitante <span class="req">*</span></label>
+                        <input type="text" id="solicitudBloqueoNombre" class="input-porteria" placeholder="Se autocompletará si ya existe en sistema" required>
+                        <small id="solicitudBloqueoStatus" style="font-size:0.8rem;font-weight:600;margin-top:4px;display:block;"></small>
+                    </div>
+
+                    <div class="campo">
+                        <label style="font-weight:700;color:#1e293b;">Motivo / Razones del Reporte de Seguridad <span class="req">*</span></label>
+                        <textarea id="solicitudBloqueoMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Describe detalladamente las razones o el incidente por el cual se solicita vetar a esta persona (Ej: Agresión verbal a personal de guardia e intento de ingreso de sustancias no permitidas...)" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer-salida" style="padding:15px 20px;background:#f8fafc;">
+                    <button type="button" class="btn-cancelar-salida" onclick="cerrarModalSolicitarBloqueo()">Cancelar</button>
+                    <button type="submit" id="btnEnviarSolicitudBloqueo" class="btn-confirmar-salida" style="background:#dc2626;"><i class="ph ph-paper-plane-tilt"></i> Enviar Reporte de Veto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/porteria.js"></script>
+</body>
+</html>

@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin | La Perla S.A.</title>
+    <script>
+        (function() {
+            try {
+                const u = JSON.parse(localStorage.getItem('usuario_activo'));
+                if (!u) {
+                    window.location.replace('index.html');
+                } else if (u.id_rol !== 1) {
+                    window.location.replace('porteria.html');
+                }
+            } catch(e) {
+                window.location.replace('index.html');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="css/admin.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Librería para Exportar a Excel (.xlsx) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="ph ph-shield-check logo-icon"></i>
+            <div class="logo-text">
+                <span class="logo-title">LA PERLA</span>
+                <span class="logo-sub">Panel de Control</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="nav-section-label">PRINCIPAL</p>
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <i class="ph ph-squares-four"></i> Dashboard
+            </a>
+            <a href="#" class="nav-item" data-page="visitas-activas">
+                <i class="ph ph-door-open"></i> Visitas Activas
+            </a>
+
+            <p class="nav-section-label">GESTIÓN</p>
+            <a href="#" class="nav-item" data-page="visitantes">
+                <i class="ph ph-address-book"></i> Visitantes
+            </a>
+            <a href="#" class="nav-item" data-page="lista-negra">
+                <i class="ph ph-prohibit"></i> Lista Negra
+            </a>
+            <a href="#" class="nav-item" data-page="bitacora">
+                <i class="ph ph-book-open"></i> Bitácora
+            </a>
+
+            <p class="nav-section-label">ADMINISTRACIÓN</p>
+            <a href="#" class="nav-item" data-page="usuarios">
+                <i class="ph ph-users-three"></i> Usuarios
+            </a>
+            <a href="#" class="nav-item" data-page="empleados">
+                <i class="ph ph-identification-card"></i> Empleados
+            </a>
+            <a href="#" class="nav-item" data-page="areas">
+                <i class="ph ph-buildings"></i> Áreas
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="btnLogout">
+                <i class="ph ph-sign-out"></i> Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="main-content">
+
+        <!-- Barra Superior -->
+        <header class="topbar">
+            <button class="btn-toggle-sidebar" id="btnToggleSidebar">
+                <i class="ph ph-list"></i>
+            </button>
+            <div class="topbar-right">
+                <span class="topbar-date" id="topbarFecha"></span>
+                <div class="topbar-user">
+                    <i class="ph ph-user-circle"></i>
+                    <span id="topbarUsername">Administrador</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ==================== PÁGINA: DASHBOARD ==================== -->
+        <section class="page active" id="page-dashboard">
+            <div class="page-header">
+                <h1>Dashboard</h1>
+                <p>Resumen del estado actual de la planta</p>
+            </div>
+
+            <!-- Tarjetas de Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="stat-icon"><i class="ph ph-door-open"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statEnPlanta">-</span>
+                        <span class="stat-label">Visitantes en Planta</span>
+                    </div>
+                </div>
+                <div class="stat-card yellow">
+                    <div class="stat-icon"><i class="ph ph-calendar-check"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statHoy">-</span>
+                        <span class="stat-label">Visitas Hoy</span>
+                    </div>
+                </div>
+                <div class="stat-card dark">
+                    <div class="stat-icon"><i class="ph ph-address-book"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statTotalVisitantes">-</span>
+                        <span class="stat-label">Visitantes Registrados</span>
+                    </div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-icon"><i class="ph ph-prohibit"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statListaNegra">-</span>
+                        <span class="stat-label">En Lista Negra</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Visitantes en planta ahora -->
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-door-open"></i> Visitantes en Planta Ahora</h2>
+                    <button class="btn-refresh" id="btnRefreshDashboard">
+                        <i class="ph ph-arrows-clockwise"></i> Actualizar
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="tablaEnPlanta">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>EPS</th>
+                                <th>Área Destino</th>
+                                <th>Anfitrión</th>
+                                <th>Ingresó</th>
+                                <th>Tiempo</th>
+                                <th>Objetos</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyEnPlanta">
+                            <tr><td colspan="10" class="empty-state">Cargando datos...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- ==================== PÁGINA: VISITAS ACTIVAS ==================== -->
+        <section class="page" id="page-visitas-activas">
+            <div class="page-header">
+                <h1>Visitas Activas (En Planta)</h1>
+                <p>Control en tiempo real de personas actualmente dentro de las instalaciones</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-door-open"></i> Personal Externo en Planta</h2>
+                    <button class="btn-refresh" onclick="cargarTablaVisitasActivas()"><i class="ph ph-arrows-clockwise"></i> Actualizar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>EPS</th>
+                                <th>Área Destino</th>
+                                <th>Anfitrión</th>
+                                <th>Ingreso</th>
+                                <th>Tiempo en Planta</th>
+                                <th>Objetos</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyVisitasActivas">
+                            <tr><td colspan="10" class="empty-state">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: VISITANTES ==================== -->
+        <section class="page" id="page-visitantes">
+            <div class="page-header">
+                <h1>Directorio de Visitantes</h1>
+                <p>Historial maestro de personas registradas en el sistema</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-address-book"></i> Padrón de Visitantes</h2>
+                </div>
+                <div class="filters-bar">
+                    <div class="form-group" style="flex: 1; min-width: 250px;">
+                        <label>Buscar por Cédula o Nombre</label>
+                        <input type="text" id="inputBuscarVisitantesTabla" class="input-field" placeholder="Escribe y presiona Enter..." onkeypress="if(event.key==='Enter') cargarTablaVisitantes()">
+                    </div>
+                    <button class="btn-primary" style="margin-top: 18px;" onclick="cargarTablaVisitantes()"><i class="ph ph-magnifying-glass"></i> Buscar</button>
+                    <button class="btn-cancel" style="margin-top: 18px;" onclick="document.getElementById('inputBuscarVisitantesTabla').value=''; cargarTablaVisitantes();">Limpiar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre Completo</th>
+                                <th>Documento</th>
+                                <th>Teléfono</th>
+                                <th>EPS</th>
+                                <th>Total Visitas</th>
+                                <th>Estado Seguridad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyVisitantes">
+                            <tr><td colspan="8" class="empty-state">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: LISTA NEGRA ==================== -->
+        <section class="page" id="page-lista-negra">
+            <div class="page-header">
+                <h1>Control de Lista Negra y Solicitudes de Desbloqueo</h1>
+                <p>Gestión de restricciones de acceso y revisión de peticiones enviadas por los escoltas de portería</p>
+            </div>
+
+            <!-- TARJETA: SOLICITUDES DE DESBLOQUEO PENDIENTES (ENVIADAS POR ESCOLTAS) -->
+            <div class="card" style="margin-bottom: 25px; border-left: 4px solid #f59e0b;">
+                <div class="card-header">
+                    <h2>
+                        <i class="ph ph-paper-plane-tilt" style="color:#d97706;"></i> Solicitudes de Desbloqueo de Escoltas 
+                        <span class="badge" id="badgeSolicitudesCount" style="background:#b91c1c;color:#fff;font-size:0.75rem;padding:3px 9px;border-radius:12px;margin-left:8px;">0 Pendientes</span>
+                    </h2>
+                    <button class="btn-refresh" onclick="cargarSolicitudesPendientesAdmin()"><i class="ph ph-arrows-clockwise"></i> Refrescar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>Motivo Sanción</th>
+                                <th>Escolta Solicita</th>
+                                <th>Justificación del Escolta</th>
+                                <th>Fecha Solicitud</th>
+                                <th>Acciones de Autorización</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodySolicitudesPendientes">
+                            <tr><td colspan="8" class="empty-state">✅ No hay solicitudes de desbloqueo pendientes.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TARJETA: SOLICITUDES DE BLOQUEO / VETO PENDIENTES (ENVIADAS POR ESCOLTAS) -->
+            <div class="card" style="margin-bottom: 25px; border-left: 4px solid #dc2626;">
+                <div class="card-header">
+                    <h2>
+                        <i class="ph ph-shield-warning" style="color:#dc2626;"></i> Solicitudes de Veto / Bloqueo de Escoltas 
+                        <span class="badge" id="badgeSolicitudesBloqueoCount" style="background:#dc2626;color:#fff;font-size:0.75rem;padding:3px 9px;border-radius:12px;margin-left:8px;">0 Pendientes</span>
+                    </h2>
+                    <button class="btn-refresh" onclick="cargarSolicitudesBloqueoPendientesAdmin()"><i class="ph ph-arrows-clockwise"></i> Refrescar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Persona a Vetar</th>
+                                <th>Documento</th>
+                                <th>Escolta Reporta</th>
+                                <th>Motivo / Justificación del Veto</th>
+                                <th>Fecha Reporte</th>
+                                <th>Acción de Seguridad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodySolicitudesBloqueoPendientes">
+                            <tr><td colspan="7" class="empty-state">✅ No hay reportes de veto pendientes en este momento.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-prohibit"></i> Registro de Bloqueos y Sanciones Activas</h2>
+                    <button class="btn-primary" style="background:#dc2626;" onclick="abrirModalBloquearDirecto()"><i class="ph ph-plus"></i> Registrar Bloqueo</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>Fecha Bloqueo</th>
+                                <th>Motivo del Bloqueo</th>
+                                <th>Registrado Por</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyListaNegra">
+                            <tr><td colspan="8" class="empty-state">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: BITÁCORA ==================== -->
+        <section class="page" id="page-bitacora">
+            <div class="page-header">
+                <h1>Bitácora Histórica de Visitas</h1>
+                <p>Auditoría completa de todas las entradas y salidas registradas en portería</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-book-open"></i> Historial Transaccional</h2>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-primary" style="background:#15803d;" onclick="exportarBitacoraExcel()">
+                            <i class="ph ph-file-xls"></i> Exportar a Excel
+                        </button>
+                        <button class="btn-refresh" onclick="cargarTablaBitacora()">
+                            <i class="ph ph-arrows-clockwise"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+                <div class="quick-filters">
+                    <span class="quick-filter-label"><i class="ph ph-lightning"></i> Filtrar Rápido:</span>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('hoy', this)"><i class="ph ph-calendar"></i> Hoy</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('semana_actual', this)"><i class="ph ph-calendar"></i> Esta Semana</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_7_dias', this)"><i class="ph ph-calendar"></i> Últimos 7 Días</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('este_mes', this)"><i class="ph ph-calendar"></i> Este Mes</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_30_dias', this)"><i class="ph ph-calendar"></i> Últimos 30 Días</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('todo', this)"><i class="ph ph-calendar-blank"></i> Todo el Historial</button>
+                </div>
+                <div class="filters-bar">
+                    <div class="form-group">
+                        <label>Desde Fecha</label>
+                        <input type="date" id="filtroBitacoraDesde" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Hasta Fecha</label>
+                        <input type="date" id="filtroBitacoraHasta" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select id="filtroBitacoraEstado" class="input-field">
+                            <option value="">Todos los estados</option>
+                            <option value="EN_PLANTA">En Planta</option>
+                            <option value="FINALIZADO">Finalizado</option>
+                            <option value="CANCELADO">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 180px;">
+                        <label>Buscar Visitante o Doc</label>
+                        <input type="text" id="filtroBitacoraBuscar" class="input-field" placeholder="Nombre o cédula..." onkeypress="if(event.key==='Enter') cargarTablaBitacora()">
+                    </div>
+                    <button class="btn-primary" style="margin-top: 18px;" onclick="cargarTablaBitacora()"><i class="ph ph-funnel"></i> Filtrar</button>
+                    <button class="btn-cancel" style="margin-top: 18px;" onclick="limpiarFiltrosBitacora()">Limpiar</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th># ID</th>
+                                <th>Fecha/Hora Ingreso</th>
+                                <th>Fecha/Hora Salida</th>
+                                <th>Visitante</th>
+                                <th>Documento</th>
+                                <th>Área</th>
+                                <th>Anfitrión</th>
+                                <th>Objetos</th>
+                                <th>Escolta Entrada / Salida</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyBitacora">
+                            <tr><td colspan="10" class="empty-state">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: ÁREAS ==================== -->
+        <section class="page" id="page-areas">
+            <div class="page-header">
+                <h1>Gestión de Áreas</h1>
+                <p>Departamentos y zonas de La Perla S.A.</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-buildings"></i> Áreas Registradas</h2>
+                    <button class="btn-primary" onclick="abrirModalArea()"><i class="ph ph-plus"></i> Nueva Área</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Nombre del Área</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="tbodyAreas"><tr><td colspan="5" class="empty-state">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: USUARIOS ==================== -->
+        <section class="page" id="page-usuarios">
+            <div class="page-header">
+                <h1>Gestión de Usuarios</h1>
+                <p>Cuentas de acceso al sistema (Escoltas y Administradores)</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-users-three"></i> Usuarios del Sistema</h2>
+                    <button class="btn-primary" onclick="abrirModalUsuario()"><i class="ph ph-plus"></i> Nuevo Usuario</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Nombre Completo</th><th>Documento</th><th>Usuario</th><th>Email</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="tbodyUsuarios"><tr><td colspan="8" class="empty-state">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PÁGINA: EMPLEADOS ==================== -->
+        <section class="page" id="page-empleados">
+            <div class="page-header">
+                <h1>Gestión de Empleados</h1>
+                <p>Personal interno de La Perla S.A. que recibe visitantes</p>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="ph ph-identification-card"></i> Empleados Registrados</h2>
+                    <button class="btn-primary" onclick="abrirModalEmpleado()"><i class="ph ph-plus"></i> Nuevo Empleado</button>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead><tr><th>#</th><th>Nombre Completo</th><th>Documento</th><th>Cargo</th><th>Área</th><th>Email Corporativo</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="tbodyEmpleados"><tr><td colspan="8" class="empty-state">Cargando...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== MODAL: ÁREA ==================== -->
+    <div class="modal-overlay hidden" id="modalArea">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalAreaTitulo"><i class="ph ph-buildings"></i> Nueva Área</h3>
+                <button class="modal-close" onclick="cerrarModal('modalArea')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formArea" onsubmit="guardarArea(event)">
+                <input type="hidden" id="areaId">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group full-width">
+                        <label>Nombre del Área <span class="required">*</span></label>
+                        <input type="text" id="areaNombre" class="input-field" placeholder="Ej: Gerencia General" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Descripción</label>
+                        <textarea id="areaDescripcion" class="input-field textarea" rows="2" placeholder="Descripción opcional..."></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Estado</label>
+                        <select id="areaEstado" class="input-field">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalArea')">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-floppy-disk"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: USUARIO ==================== -->
+    <div class="modal-overlay hidden" id="modalUsuario">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalUsuarioTitulo"><i class="ph ph-user-plus"></i> Nuevo Usuario</h3>
+                <button class="modal-close" onclick="cerrarModal('modalUsuario')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formUsuario" onsubmit="guardarUsuario(event)">
+                <input type="hidden" id="usuarioId">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group">
+                        <label>Nombre Completo <span class="required">*</span></label>
+                        <input type="text" id="usuarioNombreCompleto" class="input-field" placeholder="Ej: Adolfo Pérez Gómez" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cédula / Documento <span class="required">*</span></label>
+                        <input type="text" id="usuarioNumeroDocumento" class="input-field" placeholder="Ej: 1097609001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de Usuario (Login) <span class="required">*</span></label>
+                        <input type="text" id="usuarioUsername" class="input-field" placeholder="Ej: escolta.adolfo" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="usuarioEmail" class="input-field" placeholder="usuario@laperla.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña <span class="required" id="labelPassReq">*</span></label>
+                        <input type="password" id="usuarioPassword" class="input-field" placeholder="Contraseña temporal">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol <span class="required">*</span></label>
+                        <select id="usuarioRol" class="input-field" required>
+                            <option value="1">Administrador de Sistemas</option>
+                            <option value="2">Escolta Operador</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Estado</label>
+                        <select id="usuarioEstado" class="input-field">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalUsuario')">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-floppy-disk"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: EMPLEADO ==================== -->
+    <div class="modal-overlay hidden" id="modalEmpleado">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h3 id="modalEmpleadoTitulo"><i class="ph ph-identification-card"></i> Nuevo Empleado</h3>
+                <button class="modal-close" onclick="cerrarModal('modalEmpleado')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
+                <input type="hidden" id="empleadoId">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group">
+                        <label>Tipo de Documento <span class="required">*</span></label>
+                        <select id="empleadoTipoDoc" class="input-field" required>
+                            <option value="CC">Cédula (CC)</option>
+                            <option value="CE">Cédula Extranjería (CE)</option>
+                            <option value="PASAPORTE">Pasaporte</option>
+                            <option value="PEP">PEP</option>
+                            <option value="PPT">PPT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Documento <span class="required">*</span></label>
+                        <input type="text" id="empleadoNumDoc" class="input-field" placeholder="Ej: 1018456789" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombres <span class="required">*</span></label>
+                        <input type="text" id="empleadoNombres" class="input-field" placeholder="Nombres" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos <span class="required">*</span></label>
+                        <input type="text" id="empleadoApellidos" class="input-field" placeholder="Apellidos" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cargo <span class="required">*</span></label>
+                        <input type="text" id="empleadoCargo" class="input-field" placeholder="Ej: Jefe de Sistemas" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Área <span class="required">*</span></label>
+                        <select id="empleadoArea" class="input-field" required>
+                            <option value="">-- Selecciona el área --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Corporativo <span class="required">*</span></label>
+                        <input type="email" id="empleadoEmail" class="input-field" placeholder="nombre@laperla.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="empleadoTelefono" class="input-field" placeholder="Ej: 3001234567">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Estado</label>
+                        <select id="empleadoEstado" class="input-field">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalEmpleado')">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-floppy-disk"></i> Guardar Empleado</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: REGISTRAR SALIDA ==================== -->
+    <div class="modal-overlay hidden" id="modalSalida">
+        <div class="modal">
+            <div class="modal-header" style="background: #b45309;">
+                <h3><i class="ph ph-sign-out"></i> Registrar Salida de Visitante</h3>
+                <button class="modal-close" onclick="cerrarModal('modalSalida')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formSalida" onsubmit="confirmarSalida(event)">
+                <input type="hidden" id="salidaIdVisita">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group full-width">
+                        <p style="font-size: 0.95rem; color: #334155;">¿Confirmas la salida del visitante <strong id="salidaNombreVisitante"></strong>?</p>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Objetos reportados al ingreso:</label>
+                        <p id="salidaObjetosReportados" style="background:#f1f5f9; padding: 8px 12px; border-radius: 6px; font-size:0.88rem; color:#475569;"></p>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Observaciones de salida (opcional)</label>
+                        <textarea id="salidaObservaciones" class="input-field textarea" rows="2" placeholder="Ej: Retira todos sus equipos en orden..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalSalida')">Cancelar</button>
+                    <button type="submit" class="btn-primary" style="background:#b45309;"><i class="ph ph-check-circle"></i> Confirmar Salida</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: BLOQUEAR VISITANTE (LISTA NEGRA) ==================== -->
+    <div class="modal-overlay hidden" id="modalBloquear">
+        <div class="modal">
+            <div class="modal-header" style="background: #dc2626;">
+                <h3><i class="ph ph-prohibit"></i> Registrar en Lista Negra (Vetar)</h3>
+                <button class="modal-close" onclick="cerrarModal('modalBloquear')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formBloquear" onsubmit="confirmarBloqueo(event)">
+                <input type="hidden" id="bloquearIdVisitante">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group full-width" id="bloqueoDocGroup">
+                        <label>Número de Documento del Visitante <span class="required">*</span></label>
+                        <input type="text" id="bloquearNumeroDoc" class="input-field" placeholder="Digita cédula a sancionar...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Visitante</label>
+                        <input type="text" id="bloquearNombreVisitante" class="input-field" readonly>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Motivo de la Sanción / Bloqueo <span class="required">*</span></label>
+                        <textarea id="bloquearMotivo" class="input-field textarea" rows="3" placeholder="Describe claramente la falta, infracción o razón de seguridad..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalBloquear')">Cancelar</button>
+                    <button type="submit" class="btn-primary" style="background:#dc2626;"><i class="ph ph-lock"></i> Aplicar Sanción</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: DESBLOQUEAR VISITANTE ==================== -->
+    <div class="modal-overlay hidden" id="modalDesbloquear">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="ph ph-lock-open"></i> Levantar Sanción (Desbloquear)</h3>
+                <button class="modal-close" onclick="cerrarModal('modalDesbloquear')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formDesbloquear" onsubmit="confirmarDesbloqueo(event)">
+                <input type="hidden" id="desbloquearIdListaNegra">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group full-width">
+                        <p style="font-size: 0.95rem; color: #334155;">Vas a autorizar nuevamente el ingreso a <strong id="desbloquearNombreVisitante"></strong>.</p>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Motivo del Levantamiento de Sanción <span class="required">*</span></label>
+                        <textarea id="desbloquearMotivo" class="input-field textarea" rows="3" placeholder="Razón o autorización por la cual se desbloquea..." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalDesbloquear')">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-check"></i> Autorizar y Desbloquear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: EDITAR VISITANTE ==================== -->
+    <div class="modal-overlay hidden" id="modalEditarVisitante">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="ph ph-pencil"></i> Editar Datos de Visitante</h3>
+                <button class="modal-close" onclick="cerrarModal('modalEditarVisitante')"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="formEditarVisitante" onsubmit="guardarEdicionVisitante(event)">
+                <input type="hidden" id="editVisitanteId">
+                <div class="form-grid" style="padding:20px;">
+                    <div class="form-group">
+                        <label>Tipo de Documento</label>
+                        <select id="editVisitanteTipoDoc" class="input-field">
+                            <option value="CC">Cédula (CC)</option>
+                            <option value="CE">Cédula Extranjería (CE)</option>
+                            <option value="PASAPORTE">Pasaporte</option>
+                            <option value="PEP">PEP</option>
+                            <option value="PPT">PPT</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Documento</label>
+                        <input type="text" id="editVisitanteNumDoc" class="input-field" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Nombre Completo <span class="required">*</span></label>
+                        <input type="text" id="editVisitanteNombre" class="input-field" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="editVisitanteTelefono" class="input-field">
+                    </div>
+                    <div class="form-group">
+                        <label>EPS <span class="required">*</span></label>
+                        <input type="text" id="editVisitanteEps" class="input-field" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" onclick="cerrarModal('modalEditarVisitante')">Cancelar</button>
+                    <button type="submit" class="btn-primary"><i class="ph ph-floppy-disk"></i> Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "app_escoltas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "login.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.23.4"
+  }
+}

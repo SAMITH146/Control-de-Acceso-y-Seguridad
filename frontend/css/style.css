@@ -1,0 +1,206 @@
+/* ==========================================================================
+   VARIABLES DE COLOR - LA PERLA (BASADO EN TU IMAGEN)
+   ========================================================================== */
+:root {
+    --color-primary: #0E773A; /* Verde profundo corporativo La Perla */
+    --color-accent: #FFDF00;  /* Amarillo brillante La Perla */
+    --color-accent-hover: #E6C800;
+    --color-text: #222222;
+    --color-text-light: #555555;
+}
+
+/* ==========================================================================
+   RESET Y ESTILOS BASE
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Fondo con el verde característico de la web de La Perla */
+    background: linear-gradient(135deg, #159549 0%, #084A22 100%);
+    position: relative;
+}
+
+/* ==========================================================================
+   TARJETA DE LOGIN
+   ========================================================================== */
+.login-container {
+    position: relative;
+    z-index: 1;
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 20px;
+    padding: 45px 40px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   CABECERA (HEADER)
+   ========================================================================== */
+.login-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo-placeholder {
+    font-size: 3.5rem;
+    color: var(--color-primary); /* Icono en verde */
+    margin-bottom: 5px;
+}
+
+.login-header h1 {
+    font-size: 2.2rem;
+    color: var(--color-primary); /* Letras en verde */
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+    font-weight: 800;
+}
+
+.login-header p {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   CAMPOS DE TEXTO (INPUTS)
+   ========================================================================== */
+.input-group {
+    position: relative;
+    margin-bottom: 22px;
+}
+
+.input-group .icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #999;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: var(--color-text);
+    outline: none;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    position: relative;
+    z-index: 1;
+}
+
+.input-group input:focus {
+    border-color: var(--color-primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(14, 119, 58, 0.1);
+}
+
+.input-group input:focus ~ .icon {
+    color: var(--color-primary);
+}
+
+/* ==========================================================================
+   ACCIONES (RECORDAR Y OLVIDÓ CONTRASEÑA)
+   ========================================================================== */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-text-light);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.forgot-password {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+.forgot-password:hover {
+    color: var(--color-accent-hover);
+}
+
+/* ==========================================================================
+   BOTÓN PRINCIPAL
+   ========================================================================== */
+.btn-ingresar {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--color-accent); /* Fondo Amarillo */
+    color: var(--color-primary); /* Texto Verde para máximo contraste */
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 223, 0, 0.3);
+}
+
+.btn-ingresar:hover {
+    background-color: var(--color-accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 223, 0, 0.5);
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.login-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+/* ==========================================================================
+   ANIMACIONES (UX)
+   ========================================================================== */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+}
+
+.shake-error {
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
