@@ -110,12 +110,29 @@ exports.buscarVisitante = async (req, res) => {
     return res.json({ en_lista_negra: false, visitante: null });
 };
 
-// Listar todos los visitantes (paginado)
+// Listar todos los visitantes (paginado y búsqueda)
 exports.getVisitantes = async (req, res) => {
     const limit = Math.max(1, parseInt(req.query.limit, 10) || 100);
     const offset = Math.max(0, parseInt(req.query.offset, 10) || 0);
+    const q = (req.query.q || '').trim();
+
     try {
-        const [rows] = await db.query(`SELECT * FROM visitantes ORDER BY nombre_completo LIMIT ${limit} OFFSET ${offset}`);
+        let sql = `
+            SELECT v.*,
+                   (SELECT COUNT(*) FROM bitacora_visitas b WHERE b.id_visitante = v.id_visitante) AS total_visitas,
+                   (SELECT COUNT(*) FROM lista_negra ln WHERE ln.id_visitante = v.id_visitante AND ln.estado_activo = 1) AS esta_vetado
+            FROM visitantes v
+        `;
+        const params = [];
+
+        if (q) {
+            sql += ` WHERE v.nombre_completo LIKE ? OR v.numero_documento LIKE ?`;
+            params.push(`%${q}%`, `%${q}%`);
+        }
+
+        sql += ` ORDER BY v.nombre_completo LIMIT ${limit} OFFSET ${offset}`;
+
+        const [rows] = await db.execute(sql, params);
         res.json(rows);
     } catch (err) {
         console.error('Error en visitantesController.getVisitantes:', err);

@@ -657,7 +657,7 @@ async function cargarTablaVisitantes() {
                 <td><span style="font-size:0.78rem;background:#e2e8f0;padding:3px 8px;border-radius:10px;">${v.tipo_documento} ${v.numero_documento}</span></td>
                 <td>${v.telefono || '—'}</td>
                 <td>${v.eps}</td>
-                <td><span style="font-weight:700;color:var(--verde);">${v.total_visitas} visitas</span></td>
+                <td><span style="font-weight:700;color:var(--verde);">${v.total_visitas ?? 0} visitas</span></td>
                 <td>
                     ${v.esta_vetado > 0 ? '<span class="badge-vetado"><i class="ph ph-prohibit"></i> SANCIONADO</span>' : '<span class="badge-activo"><i class="ph ph-check"></i> AUTORIZADO</span>'}
                 </td>
