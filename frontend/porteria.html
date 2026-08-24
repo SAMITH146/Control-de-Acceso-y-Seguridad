@@ -16,6 +16,8 @@
             }
         })();
     </script>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/porteria.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
@@ -418,6 +420,13 @@
         </div>
     </div>
 
-    <script src="js/porteria.js"></script>
+    <!-- Módulos compartidos -->
+    <script src="js/shared/auth-interceptor.js"></script>
+    <!-- Módulos de Portería -->
+    <script src="js/porteria/core.js"></script>
+    <script src="js/porteria/ingreso.js"></script>
+    <script src="js/porteria/planta.js"></script>
+    <script src="js/porteria/consultas.js"></script>
+    <script src="js/porteria/solicitudes.js"></script>
 </body>
 </html>

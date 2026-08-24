@@ -1,0 +1,28 @@
+/* ==========================================================================
+   TEMA GLOBAL — LA PERLA S.A.
+   Variables de color y reset compartidos entre Admin y Portería
+   ========================================================================== */
+:root {
+    --verde: #0E773A;
+    --verde-oscuro: #084A22;
+    --verde-claro: #e8f5ee;
+    --amarillo: #FFDF00;
+    --amarillo-hover: #E6C800;
+    --rojo: #dc2626;
+    --rojo-claro: #fef2f2;
+    --texto-oscuro: #1a1a1a;
+    --texto-gris: #64748b;
+    --borde: #e2e8f0;
+    --fondo-bg: #f1f5f9;
+    --blanco: #ffffff;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+a { text-decoration: none; color: inherit; }
