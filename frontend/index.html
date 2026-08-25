@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <title>Ingreso | La Perla S.A.</title>
     <script>
         (function() {
@@ -25,12 +26,9 @@
 </head>
 <body>
     <div class="login-container">
-        <!-- Encabezado con Logo y Título -->
+        <!-- Encabezado con Logo y TÃ­tulo -->
         <div class="login-header">
-            <div class="logo-placeholder">
-                <i class="ph ph-shield-check"></i>
-            </div>
-            <h1>LA PERLA S.A.</h1>
+            <img src="img/logo-verde.svg" alt="Logo La Perla S.A." class="login-logo">
             <p>Control de Acceso y Seguridad</p>
         </div>
         
@@ -42,11 +40,11 @@
                 <input type="text" id="usuario" required placeholder="Usuario o Documento">
             </div>
             
-            <!-- Input Contraseña -->
+            <!-- Input ContraseÃ±a -->
             <div class="input-group" style="position:relative;">
                 <i class="ph ph-lock-key icon"></i>
-                <input type="password" id="password" required placeholder="Contraseña" style="padding-right:40px;">
-                <i class="ph ph-eye" id="togglePassword" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;font-size:1.25rem;" title="Mostrar / Ocultar Contraseña"></i>
+                <input type="password" id="password" required placeholder="ContraseÃ±a" style="padding-right:40px;">
+                <i class="ph ph-eye" id="togglePassword" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;font-size:1.25rem;" title="Mostrar / Ocultar ContraseÃ±a"></i>
             </div>
 
             <!-- Opciones extra -->
@@ -55,43 +53,43 @@
                     <input type="checkbox" id="recordar">
                     Recordar mi usuario
                 </label>
-                <a href="#" class="forgot-password" onclick="alert('Si ha olvidado su contraseña o presenta problemas de acceso, por favor comuníquese con el departamento de Sistemas de La Perla S.A.'); return false;">¿Problemas?</a>
+                <a href="#" class="forgot-password" onclick="alert('Si ha olvidado su contraseÃ±a o presenta problemas de acceso, por favor comunÃ­quese con el departamento de Sistemas de La Perla S.A.'); return false;">Â¿Problemas?</a>
             </div>
 
-            <!-- Botón Ingresar -->
+            <!-- BotÃ³n Ingresar -->
             <button type="submit" class="btn-ingresar">
                 INGRESAR AL SISTEMA
                 <i class="ph ph-arrow-right"></i>
             </button>
         </form>
         
-        <!-- Pie de página de la tarjeta -->
+        <!-- Pie de pÃ¡gina de la tarjeta -->
         <div class="login-footer">
-            <p>&copy; 2026 La Perla S.A. | Módulo de Portería</p>
+            <p>&copy; 2026 La Perla S.A. | MÃ³dulo de PorterÃ­a</p>
         </div>
     </div>
 
-    <!-- ==================== MODAL OBLIGATORIO: PRIMER CAMBIO DE CONTRASEÑA ==================== -->
+    <!-- ==================== MODAL OBLIGATORIO: PRIMER CAMBIO DE CONTRASEÃ‘A ==================== -->
     <div class="modal-overlay hidden" id="modalPrimerPassword" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.85);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:9999;">
         <div class="modal-card" style="background:#fff;border-radius:12px;width:90%;max-width:440px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.3);overflow:hidden;">
             <div style="background:linear-gradient(135deg, #0E773A, #0a582b);color:#fff;padding:20px;text-align:center;">
                 <i class="ph ph-lock-key" style="font-size:2.5rem;margin-bottom:8px;display:block;"></i>
-                <h3 style="margin:0;font-size:1.25rem;">🔐 Primer Inicio de Sesión</h3>
-                <p style="margin:4px 0 0 0;font-size:0.85rem;opacity:0.9;">Por seguridad, debes personalizar tu contraseña personal antes de continuar.</p>
+                <h3 style="margin:0;font-size:1.25rem;">ðŸ” Primer Inicio de SesiÃ³n</h3>
+                <p style="margin:4px 0 0 0;font-size:0.85rem;opacity:0.9;">Por seguridad, debes personalizar tu contraseÃ±a personal antes de continuar.</p>
             </div>
             <form id="formPrimerPassword" onsubmit="guardarPrimerPassword(event)" style="padding:24px;">
                 <div style="margin-bottom:16px;">
-                    <label style="display:block;font-weight:700;color:#1e293b;margin-bottom:6px;font-size:0.9rem;">Nueva Contraseña <span style="color:#dc2626;">*</span></label>
+                    <label style="display:block;font-weight:700;color:#1e293b;margin-bottom:6px;font-size:0.9rem;">Nueva ContraseÃ±a <span style="color:#dc2626;">*</span></label>
                     <div style="position:relative;">
-                        <input type="password" id="primerNuevaPassword" placeholder="Mínimo 6 caracteres" required style="width:100%;padding:10px 40px 10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:0.95rem;box-sizing:border-box;">
+                        <input type="password" id="primerNuevaPassword" placeholder="MÃ­nimo 6 caracteres" required style="width:100%;padding:10px 40px 10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:0.95rem;box-sizing:border-box;">
                         <i class="ph ph-eye" id="togglePrimerPass1" onclick="toggleVisibilidadInput('primerNuevaPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;font-size:1.2rem;"></i>
                     </div>
                 </div>
 
                 <div style="margin-bottom:20px;">
-                    <label style="display:block;font-weight:700;color:#1e293b;margin-bottom:6px;font-size:0.9rem;">Confirmar Nueva Contraseña <span style="color:#dc2626;">*</span></label>
+                    <label style="display:block;font-weight:700;color:#1e293b;margin-bottom:6px;font-size:0.9rem;">Confirmar Nueva ContraseÃ±a <span style="color:#dc2626;">*</span></label>
                     <div style="position:relative;">
-                        <input type="password" id="primerConfirmarPassword" placeholder="Vuelve a escribir la nueva contraseña" required style="width:100%;padding:10px 40px 10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:0.95rem;box-sizing:border-box;">
+                        <input type="password" id="primerConfirmarPassword" placeholder="Vuelve a escribir la nueva contraseÃ±a" required style="width:100%;padding:10px 40px 10px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:0.95rem;box-sizing:border-box;">
                         <i class="ph ph-eye" id="togglePrimerPass2" onclick="toggleVisibilidadInput('primerConfirmarPassword', this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:#64748b;font-size:1.2rem;"></i>
                     </div>
                 </div>
@@ -103,7 +101,8 @@
         </div>
     </div>
     
-    <!-- Lógica Potente en JavaScript -->
+    <!-- LÃ³gica Potente en JavaScript -->
     <script src="js/login.js"></script>
 </body>
 </html>
+
