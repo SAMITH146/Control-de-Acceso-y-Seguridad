@@ -1,5 +1,5 @@
 ﻿// =============================================================================
-// SISTEMA DE NOTIFICACIONES TOAST — LA PERLA S.A.
+// SISTEMA DE NOTIFICACIONES TOAST - LA PERLA S.A.
 // Reemplaza alert() nativo con notificaciones no bloqueantes
 // Uso: Toast.success('Mensaje'), Toast.error('Error'), Toast.info('Info')
 // =============================================================================
@@ -19,7 +19,7 @@ const Toast = (() => {
         const container = _getContainer();
 
         const toast = document.createElement('div');
-        toast.className = 	oast toast-;
+        toast.className = `toast toast-${tipo}`;
 
         const iconos = {
             success: 'ph-check-circle',
@@ -28,13 +28,13 @@ const Toast = (() => {
             warning: 'ph-warning'
         };
 
-        toast.innerHTML = 
-            <i class="ph "></i>
-            <span></span>
+        toast.innerHTML = `
+            <i class="ph ${iconos[tipo]}"></i>
+            <span>${mensaje}</span>
             <button class="toast-close" onclick="this.parentElement.remove()">
                 <i class="ph ph-x"></i>
             </button>
-        ;
+        `;
 
         container.appendChild(toast);
         requestAnimationFrame(() => toast.classList.add('toast-visible'));
