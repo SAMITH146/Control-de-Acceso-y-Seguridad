@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>Control de PorterÃ­a | La Perla S.A.</title>
+    <title>Control de Portería | La Perla S.A.</title>
     <script>
         (function() {
             try {
@@ -48,13 +48,13 @@
                     <strong id="nombreOperador">Operador</strong>
                 </div>
             </div>
-            <button class="btn-logout" id="btnLogout" title="Cerrar sesiÃ³n">
+            <button class="btn-logout" id="btnLogout" title="Cerrar sesión">
                 <i class="ph ph-sign-out"></i> Salir
             </button>
         </div>
     </header>
 
-    <!-- ==================== TABS DE NAVEGACIÃ“N RÃPIDA ==================== -->
+    <!-- ==================== TABS DE NAVEGACIÓN RÁPIDA ==================== -->
     <nav class="porteria-nav">
         <button class="nav-tab active" data-tab="entrada">
             <i class="ph ph-user-plus"></i>
@@ -81,14 +81,14 @@
         <!-- ==================== TAB 1: REGISTRAR ENTRADA ==================== -->
         <section class="tab-content active" id="tab-entrada">
             
-            <!-- Buscador RÃ¡pido -->
+            <!-- Buscador Rápido -->
             <div class="card card-search">
                 <div class="search-title">
                     <i class="ph ph-magnifying-glass-bold"></i>
                     <h2>Paso 1: Digita el documento de identidad</h2>
                 </div>
                 <div class="search-input-group">
-                    <input type="text" id="inputBuscarCedula" placeholder="Escribe la cÃ©dula o documento del visitante..." class="input-cedula-giant" autofocus>
+                    <input type="text" id="inputBuscarCedula" placeholder="Escribe la cédula o documento del visitante..." class="input-cedula-giant" autofocus>
                     <button class="btn-buscar-giant" id="btnBuscarCedula">
                         <i class="ph ph-arrow-right-bold"></i> BUSCAR
                     </button>
@@ -98,8 +98,8 @@
                 <div class="alert-sirena hidden" id="alertaListaNegra">
                     <div class="sirena-icon"><i class="ph ph-warning-octagon-fill"></i></div>
                     <div class="sirena-info">
-                        <h3>Â¡ACCESO DENEGADO! â€” PERSONA VETADA</h3>
-                        <p id="motivoBloqueoTexto">Esta persona tiene una sanciÃ³n de seguridad activa y NO puede ingresar a la planta.</p>
+                        <h3>¡ACCESO DENEGADO! — PERSONA VETADA</h3>
+                        <p id="motivoBloqueoTexto">Esta persona tiene una sanción de seguridad activa y NO puede ingresar a la planta.</p>
                         <button type="button" class="btn-solicitar-desbloqueo" id="btnSolicitarDesbloqueo" style="margin-top:12px;background:#991b1b;color:#fff;border:none;padding:9px 18px;border-radius:6px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 4px rgba(0,0,0,0.2);" onclick="abrirModalSolicitarDesbloqueoDesdeAlerta()">
                             <i class="ph ph-paper-plane-tilt-bold"></i> SOLICITAR DESBLOQUEO AL ADMIN
                         </button>
@@ -122,15 +122,15 @@
                         <div class="campo">
                             <label>Tipo de Documento</label>
                             <select id="ingresoTipoDoc" class="input-porteria">
-                                <option value="CC">CÃ©dula de CiudadanÃ­a (CC)</option>
-                                <option value="CE">CÃ©dula de ExtranjerÃ­a (CE)</option>
+                                <option value="CC">Cédula de Ciudadanía (CC)</option>
+                                <option value="CE">Cédula de Extranjería (CE)</option>
                                 <option value="PASAPORTE">Pasaporte</option>
                                 <option value="PEP">PEP</option>
                                 <option value="PPT">PPT</option>
                             </select>
                         </div>
                         <div class="campo">
-                            <label>NÃºmero de Documento</label>
+                            <label>Número de Documento</label>
                             <input type="text" id="ingresoNumDoc" class="input-porteria" readonly>
                         </div>
                         <div class="campo full">
@@ -138,7 +138,7 @@
                             <input type="text" id="ingresoNombre" class="input-porteria" placeholder="Escribe nombres y apellidos completos" required>
                         </div>
                         <div class="campo">
-                            <label>TelÃ©fono de Contacto</label>
+                            <label>Teléfono de Contacto</label>
                             <input type="tel" id="ingresoTelefono" class="input-porteria" placeholder="Ej: 3101234567">
                         </div>
                         <div class="campo">
@@ -154,20 +154,20 @@
 
                     <div class="grid-form">
                         <div class="campo">
-                            <label>Ãrea de Destino <span class="req">*</span></label>
+                            <label>Área de Destino <span class="req">*</span></label>
                             <select id="ingresoArea" class="input-porteria" required>
-                                <option value="">-- Selecciona el Ã¡rea --</option>
+                                <option value="">-- Selecciona el área --</option>
                             </select>
                         </div>
                         <div class="campo">
-                            <label>Empleado que lo Recibe (AnfitriÃ³n) <span class="req">*</span></label>
+                            <label>Empleado que lo Recibe (Anfitrión) <span class="req">*</span></label>
                             <select id="ingresoEmpleado" class="input-porteria" required>
                                 <option value="">-- Selecciona el empleado --</option>
                             </select>
                         </div>
                         <div class="campo full">
                             <label>Equipos / Herramientas / Objetos que Ingresa</label>
-                            <textarea id="ingresoObjetos" class="input-porteria textarea" rows="2" placeholder="Describe los equipos que trae consigo (Ej: PortÃ¡til Dell serie XYZ, maleta de herramientas...)"></textarea>
+                            <textarea id="ingresoObjetos" class="input-porteria textarea" rows="2" placeholder="Describe los equipos que trae consigo (Ej: Portátil Dell serie XYZ, maleta de herramientas...)"></textarea>
                         </div>
                         <div class="campo full">
                             <label>Observaciones / Motivo de Visita</label>
@@ -198,7 +198,7 @@
                 </div>
 
                 <div class="filter-quick">
-                    <input type="text" id="filtroPlanta" class="input-porteria" placeholder="Filtrar por nombre, cÃ©dula o anfitriÃ³n..." oninput="filtrarTablaPlanta()">
+                    <input type="text" id="filtroPlanta" class="input-porteria" placeholder="Filtrar por nombre, cédula o anfitrión..." oninput="filtrarTablaPlanta()">
                 </div>
 
                 <div class="table-responsive">
@@ -207,14 +207,14 @@
                             <tr>
                                 <th>#</th>
                                 <th>Visitante</th>
-                                <th>CÃ©dula</th>
+                                <th>Cédula</th>
                                 <th>EPS</th>
                                 <th>Destino</th>
-                                <th>AnfitriÃ³n</th>
+                                <th>Anfitrión</th>
                                 <th>Hora Ingreso</th>
                                 <th>Permanencia</th>
                                 <th>Objetos Registrados</th>
-                                <th>AcciÃ³n</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyPlantaPorteria">
@@ -230,8 +230,8 @@
             <div class="card">
                 <div class="card-top-header">
                     <div>
-                        <h2><i class="ph ph-prohibit"></i> Consulta RÃ¡pida y Reporte de Sanciones (Lista Negra)</h2>
-                        <p class="subtitle">Verifica si una persona tiene prohibiciÃ³n de acceso o envÃ­a un reporte para solicitar su veto al Administrador.</p>
+                        <h2><i class="ph ph-prohibit"></i> Consulta Rápida y Reporte de Sanciones (Lista Negra)</h2>
+                        <p class="subtitle">Verifica si una persona tiene prohibición de acceso o envía un reporte para solicitar su veto al Administrador.</p>
                     </div>
                     <button class="btn-refresh-planta" style="background:#b91c1c;color:#fff;" onclick="abrirModalSolicitarBloqueo()">
                         <i class="ph ph-shield-warning-bold"></i> SOLICITAR BLOQUEO / VETO AL ADMIN
@@ -251,7 +251,7 @@
                             <tr>
                                 <th>Visitante</th>
                                 <th>Documento</th>
-                                <th>Fecha SanciÃ³n</th>
+                                <th>Fecha Sanción</th>
                                 <th>Motivo del Bloqueo</th>
                                 <th>Estado</th>
                             </tr>
@@ -269,8 +269,8 @@
             <div class="card">
                 <div class="card-top-header">
                     <div>
-                        <h2><i class="ph ph-clipboard-text"></i> Actividad del DÃ­a (Hoy)</h2>
-                        <p class="subtitle">Todas las entradas y salidas atendidas en porterÃ­a durante la jornada.</p>
+                        <h2><i class="ph ph-clipboard-text"></i> Actividad del Día (Hoy)</h2>
+                        <p class="subtitle">Todas las entradas y salidas atendidas en portería durante la jornada.</p>
                     </div>
                     <button class="btn-refresh-planta" onclick="cargarMiTurno()">
                         <i class="ph ph-arrows-clockwise"></i> Actualizar
@@ -285,14 +285,14 @@
                                 <th>Hora Salida</th>
                                 <th>Visitante</th>
                                 <th>Documento</th>
-                                <th>Ãrea</th>
-                                <th>AnfitriÃ³n</th>
+                                <th>Área</th>
+                                <th>Anfitrión</th>
                                 <th>Objetos</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyMiTurno">
-                            <tr><td colspan="8" class="empty">Cargando registros del dÃ­a...</td></tr>
+                            <tr><td colspan="8" class="empty">Cargando registros del día...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -305,13 +305,13 @@
     <div class="modal-overlay hidden" id="modalSalidaPorteria">
         <div class="modal-card">
             <div class="modal-header-salida">
-                <h3><i class="ph ph-sign-out"></i> Registrar Salida de PorterÃ­a</h3>
+                <h3><i class="ph ph-sign-out"></i> Registrar Salida de Portería</h3>
                 <button class="btn-close-modal" onclick="cerrarModalSalida()"><i class="ph ph-x"></i></button>
             </div>
             <form id="formConfirmarSalidaPorteria" onsubmit="ejecutarSalidaPorteria(event)">
                 <input type="hidden" id="salidaPorteriaIdVisita">
                 <div class="modal-body">
-                    <p class="txt-confirmacion">Â¿Confirmas la salida del visitante <strong id="salidaPorteriaNombre"></strong>?</p>
+                    <p class="txt-confirmacion">¿Confirmas la salida del visitante <strong id="salidaPorteriaNombre"></strong>?</p>
                     
                     <div class="box-objetos">
                         <label><i class="ph ph-package"></i> Objetos reportados al ingresar:</label>
@@ -331,16 +331,16 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: Ã‰XITO Y ESCARAPELA ==================== -->
+    <!-- ==================== MODAL: ÉXITO Y ESCARAPELA ==================== -->
     <div class="modal-overlay hidden" id="modalExitoPase">
         <div class="modal-card modal-pase">
             <div class="pase-header">
                 <i class="ph ph-check-circle-fill pase-check"></i>
-                <h2>Â¡ENTRADA AUTORIZADA!</h2>
-                <p>La Perla S.A. â€” Control de Acceso</p>
+                <h2>¡ENTRADA AUTORIZADA!</h2>
+                <p>La Perla S.A. — Control de Acceso</p>
             </div>
             <div class="pase-body" id="paseDetalles">
-                <!-- Se llena dinÃ¡micamente -->
+                <!-- Se llena dinámicamente -->
             </div>
             <div class="pase-footer">
                 <button class="btn-print" onclick="window.print()"><i class="ph ph-printer"></i> Imprimir Pase</button>
@@ -367,13 +367,13 @@
                     </div>
 
                     <div class="campo">
-                        <label style="font-weight:700;color:#1e293b;">JustificaciÃ³n / Razones para solicitar el desbloqueo <span class="req">*</span></label>
-                        <textarea id="solicitudMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Explica detalladamente la razÃ³n (Ej: PresentÃ³ paz y salvo administrativo y autorizaciÃ³n escrita de la Gerencia de Seguridad...)" required></textarea>
+                        <label style="font-weight:700;color:#1e293b;">Justificación / Razones para solicitar el desbloqueo <span class="req">*</span></label>
+                        <textarea id="solicitudMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Explica detalladamente la razón (Ej: Presentó paz y salvo administrativo y autorización escrita de la Gerencia de Seguridad...)" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer-salida" style="padding:15px 20px;background:#f8fafc;">
                     <button type="button" class="btn-cancelar-salida" onclick="cerrarModalSolicitarDesbloqueo()">Cancelar</button>
-                    <button type="submit" class="btn-confirmar-salida" style="background:#0E773A;"><i class="ph ph-paper-plane-tilt"></i> Enviar a AdministraciÃ³n</button>
+                    <button type="submit" class="btn-confirmar-salida" style="background:#0E773A;"><i class="ph ph-paper-plane-tilt"></i> Enviar a Administración</button>
                 </div>
             </form>
         </div>
@@ -389,25 +389,25 @@
             <form id="formSolicitarBloqueo" onsubmit="enviarSolicitudBloqueo(event)">
                 <input type="hidden" id="solicitudBloqueoIdVisitante">
                 <div class="modal-body" style="padding:20px;">
-                    <p style="font-size:0.88rem;color:#64748b;margin-bottom:15px;">Este reporte serÃ¡ enviado al Administrador para su revisiÃ³n e inclusiÃ³n oficial en la Lista Negra de La Perla S.A.</p>
+                    <p style="font-size:0.88rem;color:#64748b;margin-bottom:15px;">Este reporte será enviado al Administrador para su revisión e inclusión oficial en la Lista Negra de La Perla S.A.</p>
 
                     <div class="campo" style="margin-bottom:12px;">
-                        <label style="font-weight:700;color:#1e293b;">NÃºmero de Documento (CÃ©dula) <span class="req">*</span></label>
+                        <label style="font-weight:700;color:#1e293b;">Número de Documento (Cédula) <span class="req">*</span></label>
                         <div style="display:flex;gap:8px;">
-                            <input type="text" id="solicitudBloqueoNumDoc" class="input-porteria" placeholder="Digita la cÃ©dula y presiona Enter..." required onblur="autocompletarNombreBloqueo()" onkeypress="if(event.key==='Enter'){event.preventDefault();autocompletarNombreBloqueo();}">
+                            <input type="text" id="solicitudBloqueoNumDoc" class="input-porteria" placeholder="Digita la cédula y presiona Enter..." required onblur="autocompletarNombreBloqueo()" onkeypress="if(event.key==='Enter'){event.preventDefault();autocompletarNombreBloqueo();}">
                             <button type="button" class="btn-primary" style="padding:0 14px;background:#1e293b;" onclick="autocompletarNombreBloqueo()"><i class="ph ph-magnifying-glass"></i></button>
                         </div>
                     </div>
 
                     <div class="campo" style="margin-bottom:12px;">
                         <label style="font-weight:700;color:#1e293b;">Nombre Completo del Visitante <span class="req">*</span></label>
-                        <input type="text" id="solicitudBloqueoNombre" class="input-porteria" placeholder="Se autocompletarÃ¡ si ya existe en sistema" required>
+                        <input type="text" id="solicitudBloqueoNombre" class="input-porteria" placeholder="Se autocompletará si ya existe en sistema" required>
                         <small id="solicitudBloqueoStatus" style="font-size:0.8rem;font-weight:600;margin-top:4px;display:block;"></small>
                     </div>
 
                     <div class="campo">
                         <label style="font-weight:700;color:#1e293b;">Motivo / Razones del Reporte de Seguridad <span class="req">*</span></label>
-                        <textarea id="solicitudBloqueoMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Describe detalladamente las razones o el incidente por el cual se solicita vetar a esta persona (Ej: AgresiÃ³n verbal a personal de guardia e intento de ingreso de sustancias no permitidas...)" required></textarea>
+                        <textarea id="solicitudBloqueoMotivoRazon" class="input-porteria textarea" rows="4" placeholder="Describe detalladamente las razones o el incidente por el cual se solicita vetar a esta persona (Ej: Agresión verbal a personal de guardia e intento de ingreso de sustancias no permitidas...)" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer-salida" style="padding:15px 20px;background:#f8fafc;">
@@ -418,11 +418,11 @@
         </div>
     </div>
 
-    <!-- MÃ³dulos compartidos -->
+    <!-- Módulos compartidos -->
     <script src="js/shared/toast.js"></script>
     <script src="js/shared/api.js"></script>
     <script src="js/shared/auth-interceptor.js"></script>
-    <!-- MÃ³dulos de PorterÃ­a -->
+    <!-- Módulos de Portería -->
     <script src="js/porteria/core.js"></script>
     <script src="js/porteria/ingreso.js"></script>
     <script src="js/porteria/planta.js"></script>
@@ -430,5 +430,3 @@
     <script src="js/porteria/solicitudes.js"></script>
 </body>
 </html>
-
-

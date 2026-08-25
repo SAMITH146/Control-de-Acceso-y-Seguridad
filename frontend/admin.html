@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/admin.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- LibrerÃ­a para Exportar a Excel (.xlsx) -->
+    <!-- Librería para Exportar a Excel (.xlsx) -->
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
                 <i class="ph ph-door-open"></i> Visitas Activas
             </a>
 
-            <p class="nav-section-label">GESTIÃ“N</p>
+            <p class="nav-section-label">GESTIÓN</p>
             <a href="#" class="nav-item" data-page="visitantes">
                 <i class="ph ph-address-book"></i> Visitantes
             </a>
@@ -51,10 +51,10 @@
                 <i class="ph ph-prohibit"></i> Lista Negra
             </a>
             <a href="#" class="nav-item" data-page="bitacora">
-                <i class="ph ph-book-open"></i> BitÃ¡cora
+                <i class="ph ph-book-open"></i> Bitácora
             </a>
 
-            <p class="nav-section-label">ADMINISTRACIÃ“N</p>
+            <p class="nav-section-label">ADMINISTRACIÓN</p>
             <a href="#" class="nav-item" data-page="usuarios">
                 <i class="ph ph-users-three"></i> Usuarios
             </a>
@@ -62,13 +62,13 @@
                 <i class="ph ph-identification-card"></i> Empleados
             </a>
             <a href="#" class="nav-item" data-page="areas">
-                <i class="ph ph-buildings"></i> Ãreas
+                <i class="ph ph-buildings"></i> Áreas
             </a>
         </nav>
 
         <div class="sidebar-footer">
             <button class="btn-logout" id="btnLogout">
-                <i class="ph ph-sign-out"></i> Cerrar SesiÃ³n
+                <i class="ph ph-sign-out"></i> Cerrar Sesión
             </button>
         </div>
     </aside>
@@ -90,14 +90,14 @@
             </div>
         </header>
 
-        <!-- ==================== PÃGINA: DASHBOARD ==================== -->
+        <!-- ==================== PÁGINA: DASHBOARD ==================== -->
         <section class="page active" id="page-dashboard">
             <div class="page-header">
                 <h1>Dashboard</h1>
                 <p>Resumen del estado actual de la planta</p>
             </div>
 
-            <!-- Tarjetas de EstadÃ­sticas -->
+            <!-- Tarjetas de Estadísticas -->
             <div class="stats-grid">
                 <div class="stat-card green">
                     <div class="stat-icon"><i class="ph ph-door-open"></i></div>
@@ -145,12 +145,12 @@
                                 <th>Visitante</th>
                                 <th>Documento</th>
                                 <th>EPS</th>
-                                <th>Ãrea Destino</th>
-                                <th>AnfitriÃ³n</th>
-                                <th>IngresÃ³</th>
+                                <th>Área Destino</th>
+                                <th>Anfitrión</th>
+                                <th>Ingresó</th>
                                 <th>Tiempo</th>
                                 <th>Objetos</th>
-                                <th>AcciÃ³n</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyEnPlanta">
@@ -163,7 +163,7 @@
 
 
 
-        <!-- ==================== PÃGINA: VISITAS ACTIVAS ==================== -->
+        <!-- ==================== PÁGINA: VISITAS ACTIVAS ==================== -->
         <section class="page" id="page-visitas-activas">
             <div class="page-header">
                 <h1>Visitas Activas (En Planta)</h1>
@@ -182,12 +182,12 @@
                                 <th>Visitante</th>
                                 <th>Documento</th>
                                 <th>EPS</th>
-                                <th>Ãrea Destino</th>
-                                <th>AnfitriÃ³n</th>
+                                <th>Área Destino</th>
+                                <th>Anfitrión</th>
                                 <th>Ingreso</th>
                                 <th>Tiempo en Planta</th>
                                 <th>Objetos</th>
-                                <th>AcciÃ³n</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyVisitasActivas">
@@ -198,7 +198,7 @@
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: VISITANTES ==================== -->
+        <!-- ==================== PÁGINA: VISITANTES ==================== -->
         <section class="page" id="page-visitantes">
             <div class="page-header">
                 <h1>Directorio de Visitantes</h1>
@@ -206,11 +206,11 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="ph ph-address-book"></i> PadrÃ³n de Visitantes</h2>
+                    <h2><i class="ph ph-address-book"></i> Padrón de Visitantes</h2>
                 </div>
                 <div class="filters-bar">
                     <div class="form-group" style="flex: 1; min-width: 250px;">
-                        <label>Buscar por CÃ©dula o Nombre</label>
+                        <label>Buscar por Cédula o Nombre</label>
                         <input type="text" id="inputBuscarVisitantesTabla" class="input-field" placeholder="Escribe y presiona Enter..." onkeypress="if(event.key==='Enter') cargarTablaVisitantes()">
                     </div>
                     <button class="btn-primary" style="margin-top: 18px;" onclick="cargarTablaVisitantes()"><i class="ph ph-magnifying-glass"></i> Buscar</button>
@@ -223,7 +223,7 @@
                                 <th>#</th>
                                 <th>Nombre Completo</th>
                                 <th>Documento</th>
-                                <th>TelÃ©fono</th>
+                                <th>Teléfono</th>
                                 <th>EPS</th>
                                 <th>Total Visitas</th>
                                 <th>Estado Seguridad</th>
@@ -238,11 +238,11 @@
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: LISTA NEGRA ==================== -->
+        <!-- ==================== PÁGINA: LISTA NEGRA ==================== -->
         <section class="page" id="page-lista-negra">
             <div class="page-header">
                 <h1>Control de Lista Negra y Solicitudes de Desbloqueo</h1>
-                <p>GestiÃ³n de restricciones de acceso y revisiÃ³n de peticiones enviadas por los escoltas de porterÃ­a</p>
+                <p>Gestión de restricciones de acceso y revisión de peticiones enviadas por los escoltas de portería</p>
             </div>
 
             <!-- TARJETA: SOLICITUDES DE DESBLOQUEO PENDIENTES (ENVIADAS POR ESCOLTAS) -->
@@ -261,15 +261,15 @@
                                 <th>#</th>
                                 <th>Visitante</th>
                                 <th>Documento</th>
-                                <th>Motivo SanciÃ³n</th>
+                                <th>Motivo Sanción</th>
                                 <th>Escolta Solicita</th>
-                                <th>JustificaciÃ³n del Escolta</th>
+                                <th>Justificación del Escolta</th>
                                 <th>Fecha Solicitud</th>
-                                <th>Acciones de AutorizaciÃ³n</th>
+                                <th>Acciones de Autorización</th>
                             </tr>
                         </thead>
                         <tbody id="tbodySolicitudesPendientes">
-                            <tr><td colspan="8" class="empty-state">âœ… No hay solicitudes de desbloqueo pendientes.</td></tr>
+                            <tr><td colspan="8" class="empty-state">✅ No hay solicitudes de desbloqueo pendientes.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -292,13 +292,13 @@
                                 <th>Persona a Vetar</th>
                                 <th>Documento</th>
                                 <th>Escolta Reporta</th>
-                                <th>Motivo / JustificaciÃ³n del Veto</th>
+                                <th>Motivo / Justificación del Veto</th>
                                 <th>Fecha Reporte</th>
-                                <th>AcciÃ³n de Seguridad</th>
+                                <th>Acción de Seguridad</th>
                             </tr>
                         </thead>
                         <tbody id="tbodySolicitudesBloqueoPendientes">
-                            <tr><td colspan="7" class="empty-state">âœ… No hay reportes de veto pendientes en este momento.</td></tr>
+                            <tr><td colspan="7" class="empty-state">✅ No hay reportes de veto pendientes en este momento.</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -331,11 +331,11 @@
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: BITÃCORA ==================== -->
+        <!-- ==================== PÁGINA: BITÁCORA ==================== -->
         <section class="page" id="page-bitacora">
             <div class="page-header">
-                <h1>BitÃ¡cora HistÃ³rica de Visitas</h1>
-                <p>AuditorÃ­a completa de todas las entradas y salidas registradas en porterÃ­a</p>
+                <h1>Bitácora Histórica de Visitas</h1>
+                <p>Auditoría completa de todas las entradas y salidas registradas en portería</p>
             </div>
             <div class="card">
                 <div class="card-header">
@@ -350,12 +350,12 @@
                     </div>
                 </div>
                 <div class="quick-filters">
-                    <span class="quick-filter-label"><i class="ph ph-lightning"></i> Filtrar RÃ¡pido:</span>
+                    <span class="quick-filter-label"><i class="ph ph-lightning"></i> Filtrar Rápido:</span>
                     <button type="button" class="btn-chip" onclick="aplicarRangoRapido('hoy', this)"><i class="ph ph-calendar"></i> Hoy</button>
                     <button type="button" class="btn-chip" onclick="aplicarRangoRapido('semana_actual', this)"><i class="ph ph-calendar"></i> Esta Semana</button>
-                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_7_dias', this)"><i class="ph ph-calendar"></i> Ãšltimos 7 DÃ­as</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_7_dias', this)"><i class="ph ph-calendar"></i> Últimos 7 Días</button>
                     <button type="button" class="btn-chip" onclick="aplicarRangoRapido('este_mes', this)"><i class="ph ph-calendar"></i> Este Mes</button>
-                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_30_dias', this)"><i class="ph ph-calendar"></i> Ãšltimos 30 DÃ­as</button>
+                    <button type="button" class="btn-chip" onclick="aplicarRangoRapido('ultimos_30_dias', this)"><i class="ph ph-calendar"></i> Últimos 30 Días</button>
                     <button type="button" class="btn-chip" onclick="aplicarRangoRapido('todo', this)"><i class="ph ph-calendar-blank"></i> Todo el Historial</button>
                 </div>
                 <div class="filters-bar">
@@ -378,7 +378,7 @@
                     </div>
                     <div class="form-group" style="flex: 1; min-width: 180px;">
                         <label>Buscar Visitante o Doc</label>
-                        <input type="text" id="filtroBitacoraBuscar" class="input-field" placeholder="Nombre o cÃ©dula..." onkeypress="if(event.key==='Enter') cargarTablaBitacora()">
+                        <input type="text" id="filtroBitacoraBuscar" class="input-field" placeholder="Nombre o cédula..." onkeypress="if(event.key==='Enter') cargarTablaBitacora()">
                     </div>
                     <button class="btn-primary" style="margin-top: 18px;" onclick="cargarTablaBitacora()"><i class="ph ph-funnel"></i> Filtrar</button>
                     <button class="btn-cancel" style="margin-top: 18px;" onclick="limpiarFiltrosBitacora()">Limpiar</button>
@@ -392,8 +392,8 @@
                                 <th>Fecha/Hora Salida</th>
                                 <th>Visitante</th>
                                 <th>Documento</th>
-                                <th>Ãrea</th>
-                                <th>AnfitriÃ³n</th>
+                                <th>Área</th>
+                                <th>Anfitrión</th>
                                 <th>Objetos</th>
                                 <th>Escolta Entrada / Salida</th>
                                 <th>Estado</th>
@@ -407,30 +407,30 @@
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: ÃREAS ==================== -->
+        <!-- ==================== PÁGINA: ÁREAS ==================== -->
         <section class="page" id="page-areas">
             <div class="page-header">
-                <h1>GestiÃ³n de Ãreas</h1>
+                <h1>Gestión de Áreas</h1>
                 <p>Departamentos y zonas de La Perla S.A.</p>
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h2><i class="ph ph-buildings"></i> Ãreas Registradas</h2>
-                    <button class="btn-primary" onclick="abrirModalArea()"><i class="ph ph-plus"></i> Nueva Ãrea</button>
+                    <h2><i class="ph ph-buildings"></i> Áreas Registradas</h2>
+                    <button class="btn-primary" onclick="abrirModalArea()"><i class="ph ph-plus"></i> Nueva Área</button>
                 </div>
                 <div class="table-wrapper">
                     <table class="data-table">
-                        <thead><tr><th>#</th><th>Nombre del Ãrea</th><th>DescripciÃ³n</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>#</th><th>Nombre del Área</th><th>Descripción</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="tbodyAreas"><tr><td colspan="5" class="empty-state">Cargando...</td></tr></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: USUARIOS ==================== -->
+        <!-- ==================== PÁGINA: USUARIOS ==================== -->
         <section class="page" id="page-usuarios">
             <div class="page-header">
-                <h1>GestiÃ³n de Usuarios</h1>
+                <h1>Gestión de Usuarios</h1>
                 <p>Cuentas de acceso al sistema (Escoltas y Administradores)</p>
             </div>
             <div class="card">
@@ -447,10 +447,10 @@
             </div>
         </section>
 
-        <!-- ==================== PÃGINA: EMPLEADOS ==================== -->
+        <!-- ==================== PÁGINA: EMPLEADOS ==================== -->
         <section class="page" id="page-empleados">
             <div class="page-header">
-                <h1>GestiÃ³n de Empleados</h1>
+                <h1>Gestión de Empleados</h1>
                 <p>Personal interno de La Perla S.A. que recibe visitantes</p>
             </div>
             <div class="card">
@@ -460,7 +460,7 @@
                 </div>
                 <div class="table-wrapper">
                     <table class="data-table">
-                        <thead><tr><th>#</th><th>Nombre Completo</th><th>Documento</th><th>Cargo</th><th>Ãrea</th><th>Email Corporativo</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>#</th><th>Nombre Completo</th><th>Documento</th><th>Cargo</th><th>Área</th><th>Email Corporativo</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="tbodyEmpleados"><tr><td colspan="8" class="empty-state">Cargando...</td></tr></tbody>
                     </table>
                 </div>
@@ -469,23 +469,23 @@
 
     </main>
 
-    <!-- ==================== MODAL: ÃREA ==================== -->
+    <!-- ==================== MODAL: ÁREA ==================== -->
     <div class="modal-overlay hidden" id="modalArea">
         <div class="modal">
             <div class="modal-header">
-                <h3 id="modalAreaTitulo"><i class="ph ph-buildings"></i> Nueva Ãrea</h3>
+                <h3 id="modalAreaTitulo"><i class="ph ph-buildings"></i> Nueva Área</h3>
                 <button class="modal-close" onclick="cerrarModal('modalArea')"><i class="ph ph-x"></i></button>
             </div>
             <form id="formArea" onsubmit="guardarArea(event)">
                 <input type="hidden" id="areaId">
                 <div class="form-grid" style="padding:20px;">
                     <div class="form-group full-width">
-                        <label>Nombre del Ãrea <span class="required">*</span></label>
+                        <label>Nombre del Área <span class="required">*</span></label>
                         <input type="text" id="areaNombre" class="input-field" placeholder="Ej: Gerencia General" required>
                     </div>
                     <div class="form-group full-width">
-                        <label>DescripciÃ³n</label>
-                        <textarea id="areaDescripcion" class="input-field textarea" rows="2" placeholder="DescripciÃ³n opcional..."></textarea>
+                        <label>Descripción</label>
+                        <textarea id="areaDescripcion" class="input-field textarea" rows="2" placeholder="Descripción opcional..."></textarea>
                     </div>
                     <div class="form-group full-width">
                         <label>Estado</label>
@@ -515,10 +515,10 @@
                 <div class="form-grid" style="padding:20px;">
                     <div class="form-group">
                         <label>Nombre Completo <span class="required">*</span></label>
-                        <input type="text" id="usuarioNombreCompleto" class="input-field" placeholder="Ej: Adolfo PÃ©rez GÃ³mez" required>
+                        <input type="text" id="usuarioNombreCompleto" class="input-field" placeholder="Ej: Adolfo Pérez Gómez" required>
                     </div>
                     <div class="form-group">
-                        <label>CÃ©dula / Documento <span class="required">*</span></label>
+                        <label>Cédula / Documento <span class="required">*</span></label>
                         <input type="text" id="usuarioNumeroDocumento" class="input-field" placeholder="Ej: 1097609001" required>
                     </div>
                     <div class="form-group">
@@ -530,8 +530,8 @@
                         <input type="email" id="usuarioEmail" class="input-field" placeholder="usuario@laperla.com" required>
                     </div>
                     <div class="form-group">
-                        <label>ContraseÃ±a <span class="required" id="labelPassReq">*</span></label>
-                        <input type="password" id="usuarioPassword" class="input-field" placeholder="ContraseÃ±a temporal">
+                        <label>Contraseña <span class="required" id="labelPassReq">*</span></label>
+                        <input type="password" id="usuarioPassword" class="input-field" placeholder="Contraseña temporal">
                     </div>
                     <div class="form-group">
                         <label>Rol <span class="required">*</span></label>
@@ -569,15 +569,15 @@
                     <div class="form-group">
                         <label>Tipo de Documento <span class="required">*</span></label>
                         <select id="empleadoTipoDoc" class="input-field" required>
-                            <option value="CC">CÃ©dula (CC)</option>
-                            <option value="CE">CÃ©dula ExtranjerÃ­a (CE)</option>
+                            <option value="CC">Cédula (CC)</option>
+                            <option value="CE">Cédula Extranjería (CE)</option>
                             <option value="PASAPORTE">Pasaporte</option>
                             <option value="PEP">PEP</option>
                             <option value="PPT">PPT</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>NÃºmero de Documento <span class="required">*</span></label>
+                        <label>Número de Documento <span class="required">*</span></label>
                         <input type="text" id="empleadoNumDoc" class="input-field" placeholder="Ej: 1018456789" required>
                     </div>
                     <div class="form-group">
@@ -593,9 +593,9 @@
                         <input type="text" id="empleadoCargo" class="input-field" placeholder="Ej: Jefe de Sistemas" required>
                     </div>
                     <div class="form-group">
-                        <label>Ãrea <span class="required">*</span></label>
+                        <label>Área <span class="required">*</span></label>
                         <select id="empleadoArea" class="input-field" required>
-                            <option value="">-- Selecciona el Ã¡rea --</option>
+                            <option value="">-- Selecciona el área --</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -603,7 +603,7 @@
                         <input type="email" id="empleadoEmail" class="input-field" placeholder="nombre@laperla.com" required>
                     </div>
                     <div class="form-group">
-                        <label>TelÃ©fono</label>
+                        <label>Teléfono</label>
                         <input type="tel" id="empleadoTelefono" class="input-field" placeholder="Ej: 3001234567">
                     </div>
                     <div class="form-group full-width">
@@ -633,7 +633,7 @@
                 <input type="hidden" id="salidaIdVisita">
                 <div class="form-grid" style="padding:20px;">
                     <div class="form-group full-width">
-                        <p style="font-size: 0.95rem; color: #334155;">Â¿Confirmas la salida del visitante <strong id="salidaNombreVisitante"></strong>?</p>
+                        <p style="font-size: 0.95rem; color: #334155;">¿Confirmas la salida del visitante <strong id="salidaNombreVisitante"></strong>?</p>
                     </div>
                     <div class="form-group full-width">
                         <label>Objetos reportados al ingreso:</label>
@@ -663,21 +663,21 @@
                 <input type="hidden" id="bloquearIdVisitante">
                 <div class="form-grid" style="padding:20px;">
                     <div class="form-group full-width" id="bloqueoDocGroup">
-                        <label>NÃºmero de Documento del Visitante <span class="required">*</span></label>
-                        <input type="text" id="bloquearNumeroDoc" class="input-field" placeholder="Digita cÃ©dula a sancionar...">
+                        <label>Número de Documento del Visitante <span class="required">*</span></label>
+                        <input type="text" id="bloquearNumeroDoc" class="input-field" placeholder="Digita cédula a sancionar...">
                     </div>
                     <div class="form-group full-width">
                         <label>Visitante</label>
                         <input type="text" id="bloquearNombreVisitante" class="input-field" readonly>
                     </div>
                     <div class="form-group full-width">
-                        <label>Motivo de la SanciÃ³n / Bloqueo <span class="required">*</span></label>
-                        <textarea id="bloquearMotivo" class="input-field textarea" rows="3" placeholder="Describe claramente la falta, infracciÃ³n o razÃ³n de seguridad..." required></textarea>
+                        <label>Motivo de la Sanción / Bloqueo <span class="required">*</span></label>
+                        <textarea id="bloquearMotivo" class="input-field textarea" rows="3" placeholder="Describe claramente la falta, infracción o razón de seguridad..." required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-cancel" onclick="cerrarModal('modalBloquear')">Cancelar</button>
-                    <button type="submit" class="btn-primary" style="background:#dc2626;"><i class="ph ph-lock"></i> Aplicar SanciÃ³n</button>
+                    <button type="submit" class="btn-primary" style="background:#dc2626;"><i class="ph ph-lock"></i> Aplicar Sanción</button>
                 </div>
             </form>
         </div>
@@ -687,7 +687,7 @@
     <div class="modal-overlay hidden" id="modalDesbloquear">
         <div class="modal">
             <div class="modal-header">
-                <h3><i class="ph ph-lock-open"></i> Levantar SanciÃ³n (Desbloquear)</h3>
+                <h3><i class="ph ph-lock-open"></i> Levantar Sanción (Desbloquear)</h3>
                 <button class="modal-close" onclick="cerrarModal('modalDesbloquear')"><i class="ph ph-x"></i></button>
             </div>
             <form id="formDesbloquear" onsubmit="confirmarDesbloqueo(event)">
@@ -697,8 +697,8 @@
                         <p style="font-size: 0.95rem; color: #334155;">Vas a autorizar nuevamente el ingreso a <strong id="desbloquearNombreVisitante"></strong>.</p>
                     </div>
                     <div class="form-group full-width">
-                        <label>Motivo del Levantamiento de SanciÃ³n <span class="required">*</span></label>
-                        <textarea id="desbloquearMotivo" class="input-field textarea" rows="3" placeholder="RazÃ³n o autorizaciÃ³n por la cual se desbloquea..." required></textarea>
+                        <label>Motivo del Levantamiento de Sanción <span class="required">*</span></label>
+                        <textarea id="desbloquearMotivo" class="input-field textarea" rows="3" placeholder="Razón o autorización por la cual se desbloquea..." required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -722,15 +722,15 @@
                     <div class="form-group">
                         <label>Tipo de Documento</label>
                         <select id="editVisitanteTipoDoc" class="input-field">
-                            <option value="CC">CÃ©dula (CC)</option>
-                            <option value="CE">CÃ©dula ExtranjerÃ­a (CE)</option>
+                            <option value="CC">Cédula (CC)</option>
+                            <option value="CE">Cédula Extranjería (CE)</option>
                             <option value="PASAPORTE">Pasaporte</option>
                             <option value="PEP">PEP</option>
                             <option value="PPT">PPT</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>NÃºmero de Documento</label>
+                        <label>Número de Documento</label>
                         <input type="text" id="editVisitanteNumDoc" class="input-field" required>
                     </div>
                     <div class="form-group full-width">
@@ -738,7 +738,7 @@
                         <input type="text" id="editVisitanteNombre" class="input-field" required>
                     </div>
                     <div class="form-group">
-                        <label>TelÃ©fono</label>
+                        <label>Teléfono</label>
                         <input type="tel" id="editVisitanteTelefono" class="input-field">
                     </div>
                     <div class="form-group">
@@ -754,11 +754,11 @@
         </div>
     </div>
 
-    <!-- MÃ³dulos compartidos -->
+    <!-- Módulos compartidos -->
     <script src="js/shared/toast.js"></script>
     <script src="js/shared/api.js"></script>
     <script src="js/shared/auth-interceptor.js"></script>
-    <!-- MÃ³dulos del Panel Admin -->
+    <!-- Módulos del Panel Admin -->
     <script src="js/admin/core.js"></script>
     <script src="js/admin/dashboard.js"></script>
     <script src="js/admin/visitas.js"></script>
@@ -771,4 +771,3 @@
     <script src="js/admin/bitacora.js"></script>
 </body>
 </html>
-
