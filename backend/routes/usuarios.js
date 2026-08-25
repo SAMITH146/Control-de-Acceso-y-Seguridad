@@ -9,6 +9,5 @@ router.get('/api/usuarios/:id', authenticateToken, requireAdmin, usuariosControl
 router.post('/api/usuarios', authenticateToken, requireAdmin, usuariosController.createUsuario);
 router.put('/api/usuarios/:id', authenticateToken, requireAdmin, usuariosController.updateUsuario);
 router.put('/api/usuarios/:id/toggle-estado', authenticateToken, requireAdmin, usuariosController.toggleEstadoUsuario);
-router.delete('/api/usuarios/:id', authenticateToken, requireAdmin, usuariosController.deleteUsuario);
 
 module.exports = router;

@@ -57,14 +57,3 @@ exports.toggleEstadoUsuario = async (req, res, next) => {
     } catch (err) { next(err); }
 };
 
-exports.deleteUsuario = async (req, res, next) => {
-    const idUsuario = req.params.id;
-    if (req.user && parseInt(req.user.id_usuario) === parseInt(idUsuario)) {
-        return res.status(400).json({ error: 'No puedes eliminar tu propia cuenta de usuario activa.' });
-    }
-    try {
-        const ok = await usuariosService.eliminar(idUsuario);
-        if (!ok) return res.status(404).json({ error: 'Usuario no encontrado' });
-        res.json({ mensaje: 'Usuario eliminado de la lista de gestion. Todo su historial se preservo intacto.' });
-    } catch (err) { next(err); }
-};

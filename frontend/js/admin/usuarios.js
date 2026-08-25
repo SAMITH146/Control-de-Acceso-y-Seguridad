@@ -27,9 +27,7 @@ async function cargarTablaUsuarios() {
                     <button class="btn-accion" style="background:${u.estado_activo ? '#d97706' : '#15803d'};color:#fff;margin-left:4px;" onclick="toggleEstadoUsuario(${u.id_usuario}, ${u.estado_activo}, '${u.username.replace(/'/g, "\\'")}')" title="${u.estado_activo ? 'Inhabilitar temporalmente' : 'Habilitar acceso'}">
                         <i class="ph ph-${u.estado_activo ? 'prohibit' : 'check-circle'}"></i> ${u.estado_activo ? 'Inhabilitar' : 'Habilitar'}
                     </button>
-                    <button class="btn-accion btn-eliminar" style="background:#dc2626;color:#fff;margin-left:4px;" onclick="eliminarUsuario(${u.id_usuario}, '${u.username.replace(/'/g, "\\'")}')" title="Eliminar cuenta preservando historial">
-                        <i class="ph ph-trash"></i> Eliminar
-                    </button>
+                    
                 </td>
             </tr>
         `).join('');
@@ -56,26 +54,6 @@ async function toggleEstadoUsuario(id, estadoActual, username) {
         }
     } catch (err) {
         Toast.error('Error al cambiar estado: ' + err.message);
-    }
-}
-
-async function eliminarUsuario(id, username) {
-    if (!confirm(`⚠️ ¿Estás seguro de que deseas eliminar al usuario '${username}'?\n\nLa cuenta desaparecerá de la lista de gestión, pero todo su historial de registros se conservará intacto para auditoría.`)) {
-        return;
-    }
-
-    try {
-        const res = await Api.usuarios.eliminar(id);
-
-        const data = await res.json();
-        if (res.ok) {
-            Toast.success(data.mensaje || 'Usuario eliminado exitosamente.');
-            cargarTablaUsuarios();
-        } else {
-            Toast.error(data.error || 'No se pudo eliminar el usuario.');
-        }
-    } catch (err) {
-        Toast.error('Error al eliminar usuario: ' + err.message);
     }
 }
 

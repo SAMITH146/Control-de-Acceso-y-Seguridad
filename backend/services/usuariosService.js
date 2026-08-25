@@ -57,8 +57,4 @@ exports.toggleEstado = async (id, nuevoEstado) => {
     await db.execute(`UPDATE usuarios SET estado_activo = ? WHERE id_usuario = ? AND eliminado = 0`, [nuevoEstado ? 1 : 0, id]);
 };
 
-/** Borrado logico de un usuario. */
-exports.eliminar = async (id) => {
-    const [result] = await db.execute(`UPDATE usuarios SET eliminado = 1, estado_activo = 0 WHERE id_usuario = ?`, [id]);
-    return result.affectedRows > 0;
-};
+
