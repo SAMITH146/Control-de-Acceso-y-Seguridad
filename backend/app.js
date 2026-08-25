@@ -29,6 +29,7 @@ const empleadosRouter = require('./routes/empleados');
 const blacklistRouter = require('./routes/blacklist');
 const bitacoraRouter = require('./routes/bitacora');
 const solicitudesRouter = require('./routes/solicitudes');
+const uploadRouter = require('./routes/upload');
 
 // Mount routers – each router defines full path (e.g., /api/login)
 app.use('/', authRouter);
@@ -41,6 +42,7 @@ app.use('/', empleadosRouter);
 app.use('/', blacklistRouter);
 app.use('/', bitacoraRouter);
 app.use('/', solicitudesRouter);
+app.use('/', uploadRouter);
 
 if (require.main === module) {
     app.listen(PORT, '0.0.0.0', () => {
