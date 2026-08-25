@@ -204,3 +204,11 @@ body {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+/* Logo constraints for login page */
+.login-logo {
+    max-width: 140px;
+    height: auto;
+    margin: 0 auto 15px auto;
+    display: block;
+}
