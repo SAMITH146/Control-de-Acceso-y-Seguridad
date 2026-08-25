@@ -1,5 +1,5 @@
 ﻿// =============================================================================
-// CAPA DE API CENTRALIZADA â€” LA PERLA S.A.
+// CAPA DE API CENTRALIZADA — LA PERLA S.A.
 // Todos los endpoints del sistema en un solo lugar.
 // Si el backend cambia una ruta, solo se modifica aqui.
 // =============================================================================
@@ -253,15 +253,12 @@ const Api = {
         }
     },
 
+    // -------------------------------------------------------------------------
+    // CARGUE MASIVO
+    // -------------------------------------------------------------------------
     upload: {
         areas: (formData) => fetch('/api/upload/areas', { method: 'POST', body: formData }).then(r => r.json()),
         empleados: (formData) => fetch('/api/upload/empleados', { method: 'POST', body: formData }).then(r => r.json()),
-        usuarios: (formData) => fetch('/api/upload/usuarios', { method: 'POST', body: formData }).then(r => r.json()),
-    }
- = filtros;
-            const url = `/api/bitacora?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}&estado=${encodeURIComponent(estado)}&buscar=${encodeURIComponent(buscar)}`;
-            return fetch(url).then(r => r.json());
-        }
+        usuarios: (formData) => fetch('/api/upload/usuarios', { method: 'POST', body: formData }).then(r => r.json())
     }
 };
-
