@@ -449,3 +449,8 @@ body {
 .pase-footer { padding: 15px 20px; background: #fafafa; display: flex; gap: 10px; justify-content: center; }
 .btn-print { background: var(--verde-claro); color: var(--verde); border: 2px solid var(--verde); padding: 12px 18px; border-radius: 10px; font-weight: 800; cursor: pointer; }
 .btn-continuar { background: var(--verde); color: white; border: none; padding: 12px 22px; border-radius: 10px; font-weight: 800; cursor: pointer; }
+
+.header-logo-img {
+    height: 40px;
+    width: auto;
+}
