@@ -1,143 +1,70 @@
-// backend/controllers/usuariosController.js
-const bcrypt = require('bcryptjs');
-const db = require('../db');
+﻿// backend/controllers/usuariosController.js
+const usuariosService = require('../services/usuariosService');
 
-exports.getUsuarios = async (req, res) => {
-    try {
-        const [usuarios] = await db.execute(`
-            SELECT u.id_usuario, u.username, u.nombre_completo, u.numero_documento, u.email, u.id_rol, u.estado_activo, r.nombre_rol
-            FROM usuarios u 
-            INNER JOIN roles r ON u.id_rol = r.id_rol 
-            WHERE u.eliminado = 0
-            ORDER BY u.username
-        `);
-        res.json(usuarios);
-    } catch (err) {
-        res.status(500).json({ error: 'Error cargando usuarios' });
-    }
+exports.getUsuarios = async (req, res, next) => {
+    try { res.json(await usuariosService.getAll()); } catch (err) { next(err); }
 };
 
-exports.getUsuarioById = async (req, res) => {
+exports.getUsuarioById = async (req, res, next) => {
     try {
-        const [rows] = await db.execute(`
-            SELECT id_usuario, username, nombre_completo, numero_documento, email, id_rol, estado_activo 
-            FROM usuarios 
-            WHERE id_usuario = ? AND eliminado = 0
-        `, [req.params.id]);
-        if (!rows.length) return res.status(404).json({ error: 'Usuario no encontrado' });
-        res.json(rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: 'Error cargando usuario' });
-    }
+        const u = await usuariosService.getById(req.params.id);
+        if (!u) return res.status(404).json({ error: 'Usuario no encontrado' });
+        res.json(u);
+    } catch (err) { next(err); }
 };
 
-exports.createUsuario = async (req, res) => {
-    const { username, nombre_completo, numero_documento, email, password_hash, id_rol, estado_activo } = req.body;
-    if (!username || !username.trim()) {
-        return res.status(400).json({ error: 'El nombre de usuario es obligatorio' });
-    }
-    if (!password_hash || !password_hash.trim()) {
-        return res.status(400).json({ error: 'La contraseña es obligatoria para usuarios nuevos' });
-    }
+exports.createUsuario = async (req, res, next) => {
+    const { username, password_hash } = req.body;
+    if (!username?.trim()) return res.status(400).json({ error: 'El nombre de usuario es obligatorio' });
+    if (!password_hash?.trim()) return res.status(400).json({ error: 'La contrasena es obligatoria para usuarios nuevos' });
     try {
-        const uTrim = username.trim();
-        const nomTrim = nombre_completo ? nombre_completo.trim() : null;
-        const docTrim = numero_documento ? numero_documento.trim() : null;
-
-        const hash = await bcrypt.hash(password_hash.trim(), 10);
-        await db.execute(`
-            INSERT INTO usuarios (username, nombre_completo, numero_documento, email, password_hash, id_rol, estado_activo, requiere_cambio_password, eliminado) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)
-        `, [uTrim, nomTrim, docTrim, email ? email.trim() : null, hash, id_rol, estado_activo ?? 1]);
-
-        res.json({ mensaje: '✅ Usuario creado exitosamente. Al iniciar sesión se le pedirá obligatoriamente personalizar su clave.' });
+        await usuariosService.crear(req.body);
+        res.json({ mensaje: 'Usuario creado exitosamente. Al iniciar sesion se le pedira personalizar su clave.' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
-            if (err.message.includes('numero_documento')) {
-                return res.status(400).json({ error: `❌ La cédula/documento '${numero_documento}' ya está registrada para otro usuario.` });
-            }
-            return res.status(400).json({ error: `❌ El usuario '${username}' ya existe en el sistema. Elige otro nombre de usuario.` });
+            if (err.message.includes('numero_documento')) return res.status(400).json({ error: `La cedula '${req.body.numero_documento}' ya esta registrada.` });
+            return res.status(400).json({ error: `El usuario '${username}' ya existe. Elige otro nombre.` });
         }
-        res.status(500).json({ error: 'Error creando usuario: ' + err.message });
+        next(err);
     }
 };
 
-exports.updateUsuario = async (req, res) => {
-    const { username, nombre_completo, numero_documento, email, password_hash, id_rol, estado_activo } = req.body;
+exports.updateUsuario = async (req, res, next) => {
     try {
-        const uTrim = username ? username.trim() : null;
-        const nomTrim = nombre_completo ? nombre_completo.trim() : null;
-        const docTrim = numero_documento ? numero_documento.trim() : null;
-        let cambioClave = false;
-
-        if (password_hash && password_hash.trim()) {
-            cambioClave = true;
-            const hash = await bcrypt.hash(password_hash.trim(), 10);
-            await db.execute(`
-                UPDATE usuarios 
-                SET username = ?, nombre_completo = ?, numero_documento = ?, email = ?, password_hash = ?, id_rol = ?, estado_activo = ?, requiere_cambio_password = 1 
-                WHERE id_usuario = ? AND eliminado = 0
-            `, [uTrim, nomTrim, docTrim, email ? email.trim() : null, hash, id_rol, estado_activo, req.params.id]);
-        } else {
-            await db.execute(`
-                UPDATE usuarios 
-                SET username = ?, nombre_completo = ?, numero_documento = ?, email = ?, id_rol = ?, estado_activo = ? 
-                WHERE id_usuario = ? AND eliminado = 0
-            `, [uTrim, nomTrim, docTrim, email ? email.trim() : null, id_rol, estado_activo, req.params.id]);
-        }
-
+        const cambioClave = await usuariosService.actualizar(req.params.id, req.body);
         const msg = cambioClave
-            ? '🔑 Contraseña temporal asignada exitosamente. El usuario deberá cambiarla obligatoriamente en su próximo inicio de sesión.'
-            : '✅ Usuario actualizado exitosamente.';
-
+            ? 'Contrasena temporal asignada. El usuario debera cambiarla en su proximo inicio de sesion.'
+            : 'Usuario actualizado exitosamente.';
         res.json({ mensaje: msg });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
-            if (err.message.includes('numero_documento')) {
-                return res.status(400).json({ error: `❌ La cédula/documento '${numero_documento}' ya le pertenece a otro usuario.` });
-            }
-            return res.status(400).json({ error: `❌ El usuario '${username}' ya está siendo usado por otra persona.` });
+            if (err.message.includes('numero_documento')) return res.status(400).json({ error: `La cedula '${req.body.numero_documento}' ya le pertenece a otro usuario.` });
+            return res.status(400).json({ error: `El usuario '${req.body.username}' ya esta siendo usado por otra persona.` });
         }
-        res.status(500).json({ error: 'Error actualizando usuario: ' + err.message });
+        next(err);
     }
 };
 
-// Cambiar estado Activo/Inactivo (Inhabilitación Temporal)
-exports.toggleEstadoUsuario = async (req, res) => {
+exports.toggleEstadoUsuario = async (req, res, next) => {
     const idUsuario = req.params.id;
-    const { estado_activo } = req.body;
-
     if (req.user && parseInt(req.user.id_usuario) === parseInt(idUsuario)) {
         return res.status(400).json({ error: 'No puedes cambiar el estado de tu propia cuenta activa.' });
     }
-
     try {
-        await db.execute(`UPDATE usuarios SET estado_activo = ? WHERE id_usuario = ? AND eliminado = 0`, [estado_activo ? 1 : 0, idUsuario]);
-        const estadoTxt = estado_activo ? 'Activada' : 'Inhabilitada';
-        res.json({ mensaje: `✅ Cuenta ${estadoTxt} exitosamente.` });
-    } catch (err) {
-        res.status(500).json({ error: 'Error al cambiar estado del usuario.' });
-    }
+        await usuariosService.toggleEstado(idUsuario, req.body.estado_activo);
+        const estadoTxt = req.body.estado_activo ? 'Activada' : 'Inhabilitada';
+        res.json({ mensaje: `Cuenta ${estadoTxt} exitosamente.` });
+    } catch (err) { next(err); }
 };
 
-// Eliminación de la lista (Borrado Lógico manteniendo historial intacto)
-exports.deleteUsuario = async (req, res) => {
+exports.deleteUsuario = async (req, res, next) => {
     const idUsuario = req.params.id;
-
     if (req.user && parseInt(req.user.id_usuario) === parseInt(idUsuario)) {
         return res.status(400).json({ error: 'No puedes eliminar tu propia cuenta de usuario activa.' });
     }
-
     try {
-        const [updResult] = await db.execute(`UPDATE usuarios SET eliminado = 1, estado_activo = 0 WHERE id_usuario = ?`, [idUsuario]);
-        if (updResult.affectedRows === 0) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-        res.json({ 
-            mensaje: '🗑️ Usuario eliminado de la lista de gestión. Todo su historial de registros se preservó 100% intacto en auditoría.' 
-        });
-    } catch (err) {
-        console.error('Error eliminando usuario:', err);
-        res.status(500).json({ error: 'Error al procesar la eliminación del usuario.' });
-    }
+        const ok = await usuariosService.eliminar(idUsuario);
+        if (!ok) return res.status(404).json({ error: 'Usuario no encontrado' });
+        res.json({ mensaje: 'Usuario eliminado de la lista de gestion. Todo su historial se preservo intacto.' });
+    } catch (err) { next(err); }
 };

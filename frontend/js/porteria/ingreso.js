@@ -9,12 +9,10 @@ let todosLosEmpleadosCache = [];
 
 async function cargarSelectsPorteria() {
     try {
-        const [resAreas, resEmpleados] = await Promise.all([
-            fetch('/api/areas'),
-            fetch('/api/empleados')
+        const [areas, empData] = await Promise.all([
+            Api.areas.getAll(),
+            Api.empleados.getAll()
         ]);
-        const areas = await resAreas.json();
-        const empData = await resEmpleados.json();
         todosLosEmpleadosCache = Array.isArray(empData) ? empData : [];
 
         const selectArea = document.getElementById('ingresoArea');
@@ -48,8 +46,7 @@ async function filtrarEmpleadosPorArea(idArea) {
 
     if (!Array.isArray(todosLosEmpleadosCache) || todosLosEmpleadosCache.length === 0) {
         try {
-            const res = await fetch('/api/empleados');
-            const data = await res.json();
+            const data = await Api.empleados.getAll();
             if (Array.isArray(data)) todosLosEmpleadosCache = data;
         } catch (e) { console.error('Error cargando empleados:', e); }
     }
@@ -75,7 +72,7 @@ async function filtrarEmpleadosPorArea(idArea) {
 async function buscarCedulaPorteria() {
     const cedula = document.getElementById('inputBuscarCedula').value.trim();
     if (!cedula) {
-        alert('Por favor digita el número de documento.');
+        Toast.warning('Por favor digita el número de documento.');
         document.getElementById('inputBuscarCedula').focus();
         return;
     }
@@ -86,8 +83,7 @@ async function buscarCedulaPorteria() {
     idVisitanteEncontrado = null;
 
     try {
-        const res = await fetch(`/api/visitantes/buscar?documento=${encodeURIComponent(cedula)}`);
-        const data = await res.json();
+        const data = await Api.visitantes.buscarPorDocumento(cedula);
 
         // 1. VERIFICACIÓN DE LISTA NEGRA
         if (data.en_lista_negra) {
@@ -131,7 +127,7 @@ async function buscarCedulaPorteria() {
         }
 
     } catch (e) {
-        alert('Error al consultar el documento. Verifica la conexión con el servidor.');
+        Toast.error('Error al consultar el documento. Verifica la conexión con el servidor.');
         console.error(e);
     }
 }
@@ -162,11 +158,7 @@ async function registrarEntradaPorteria(e) {
     };
 
     try {
-        const res = await fetch('/api/visitas/registrar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const res = await Api.visitas.registrarIngreso(payload);
         const result = await res.json();
 
         if (res.ok) {
@@ -180,7 +172,7 @@ async function registrarEntradaPorteria(e) {
             throw new Error(result.error || 'No se pudo guardar el registro');
         }
     } catch (err) {
-        alert('❌ Error: ' + err.message);
+        Toast.error('Error: ' + err.message);
         btn.innerHTML = originalText;
         btn.disabled = false;
     }

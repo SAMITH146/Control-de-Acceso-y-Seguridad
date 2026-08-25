@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarSolicitudesPendientesAdmin() {
     try {
-        const res = await fetch('/api/solicitudes-desbloqueo/pendientes');
-        const solicitudes = await res.json();
+        const solicitudes = await Api.solicitudesDesbloqueo.getPendientes();
         const tbody = document.getElementById('tbodySolicitudesPendientes');
         const badgeCount = document.getElementById('badgeSolicitudesCount');
 
@@ -49,21 +48,17 @@ async function aprobarSolicitudAdmin(idSolicitud, nombre) {
     if (justificacion === null) return;
 
     try {
-        const res = await fetch(`/api/solicitudes-desbloqueo/${idSolicitud}/aprobar`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respuesta_admin: justificacion })
-        });
+        const res = await Api.solicitudesDesbloqueo.aprobar(idSolicitud, { respuesta_admin: justificacion });
         const data = await res.json();
         if (res.ok) {
-            alert('✅ ' + (data.mensaje || 'Solicitud aprobada y visitante desbloqueado.'));
+            Toast.success(data.mensaje || 'Solicitud aprobada y visitante desbloqueado.');
             cargarSolicitudesPendientesAdmin();
             cargarTablaListaNegra();
         } else {
-            alert('❌ Error: ' + (data.error || 'No se pudo aprobar la solicitud'));
+            Toast.error('Error: ' + (data.error || 'No se pudo aprobar la solicitud'));
         }
     } catch (e) {
-        alert('❌ Error al aprobar solicitud: ' + e.message);
+        Toast.error('Error al aprobar solicitud: ' + e.message);
     }
 }
 
@@ -72,20 +67,16 @@ async function rechazarSolicitudAdmin(idSolicitud, nombre) {
     if (razonRechazo === null) return;
 
     try {
-        const res = await fetch(`/api/solicitudes-desbloqueo/${idSolicitud}/rechazar`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respuesta_admin: razonRechazo })
-        });
+        const res = await Api.solicitudesDesbloqueo.rechazar(idSolicitud, { respuesta_admin: razonRechazo });
         const data = await res.json();
         if (res.ok) {
-            alert('ℹ️ ' + (data.mensaje || 'Solicitud rechazada.'));
+            Toast.info(data.mensaje || 'Solicitud rechazada.');
             cargarSolicitudesPendientesAdmin();
         } else {
-            alert('❌ Error: ' + (data.error || 'No se pudo rechazar la solicitud'));
+            Toast.error('Error: ' + (data.error || 'No se pudo rechazar la solicitud'));
         }
     } catch (e) {
-        alert('❌ Error al rechazar solicitud: ' + e.message);
+        Toast.error('Error al rechazar solicitud: ' + e.message);
     }
 }
 
@@ -94,8 +85,7 @@ async function rechazarSolicitudAdmin(idSolicitud, nombre) {
 // =============================================================================
 async function cargarSolicitudesBloqueoPendientesAdmin() {
     try {
-        const res = await fetch('/api/solicitudes-bloqueo/pendientes');
-        const solicitudes = await res.json();
+        const solicitudes = await Api.solicitudesBloqueo.getPendientes();
         const tbody = document.getElementById('tbodySolicitudesBloqueoPendientes');
         const badgeCount = document.getElementById('badgeSolicitudesBloqueoCount');
 
@@ -139,21 +129,17 @@ async function aprobarSolicitudBloqueoAdmin(idSolicitud, nombre) {
     if (notaAdmin === null) return;
 
     try {
-        const res = await fetch(`/api/solicitudes-bloqueo/${idSolicitud}/aprobar`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respuesta_admin: notaAdmin })
-        });
+        const res = await Api.solicitudesBloqueo.aprobar(idSolicitud, { respuesta_admin: notaAdmin });
         const data = await res.json();
         if (res.ok) {
-            alert('✅ ' + (data.mensaje || 'Solicitud aprobada. El visitante ha sido vetado de La Perla S.A.'));
+            Toast.success(data.mensaje || 'Solicitud aprobada. El visitante ha sido vetado de La Perla S.A.');
             cargarSolicitudesBloqueoPendientesAdmin();
             cargarTablaListaNegra();
         } else {
-            alert('❌ Error: ' + (data.error || 'No se pudo aprobar la solicitud de veto'));
+            Toast.error('Error: ' + (data.error || 'No se pudo aprobar la solicitud de veto'));
         }
     } catch (e) {
-        alert('❌ Error al aprobar veto: ' + e.message);
+        Toast.error('Error al aprobar veto: ' + e.message);
     }
 }
 
@@ -162,19 +148,15 @@ async function rechazarSolicitudBloqueoAdmin(idSolicitud, nombre) {
     if (razonRechazo === null) return;
 
     try {
-        const res = await fetch(`/api/solicitudes-bloqueo/${idSolicitud}/rechazar`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ respuesta_admin: razonRechazo })
-        });
+        const res = await Api.solicitudesBloqueo.rechazar(idSolicitud, { respuesta_admin: razonRechazo });
         const data = await res.json();
         if (res.ok) {
-            alert('ℹ️ ' + (data.mensaje || 'Solicitud de bloqueo rechazada.'));
+            Toast.info(data.mensaje || 'Solicitud de bloqueo rechazada.');
             cargarSolicitudesBloqueoPendientesAdmin();
         } else {
-            alert('❌ Error: ' + (data.error || 'No se pudo rechazar la solicitud de veto'));
+            Toast.error('Error: ' + (data.error || 'No se pudo rechazar la solicitud de veto'));
         }
     } catch (e) {
-        alert('❌ Error al rechazar veto: ' + e.message);
+        Toast.error('Error al rechazar veto: ' + e.message);
     }
 }

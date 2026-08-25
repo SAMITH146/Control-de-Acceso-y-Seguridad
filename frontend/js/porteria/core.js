@@ -17,7 +17,7 @@ let inactividadTimerPorteria;
 function resetearInactividadPorteria() {
     clearTimeout(inactividadTimerPorteria);
     inactividadTimerPorteria = setTimeout(() => {
-        alert('⚠️ Tu sesión ha sido cerrada automáticamente por inactividad (30 minutos sin movimiento).');
+        Toast.warning('Tu sesión ha sido cerrada automáticamente por inactividad (30 minutos sin movimiento).');
         cerrarSesionPorteria();
     }, 30 * 60 * 1000);
 }
@@ -37,7 +37,7 @@ resetearInactividadPorteria();
 document.addEventListener('DOMContentLoaded', () => {
 
     // Validar en el servidor que el Token JWT siga activo y no haya expirado
-    fetch('/api/verify-token').catch(() => {});
+    Api.auth.verificarToken().catch(() => {});
 
     // 1. Mostrar nombre del operador activo
     if (usuarioActivo) {
@@ -113,8 +113,7 @@ function configurarTabs() {
 // =============================================================================
 async function actualizarConteoEnPlanta() {
     try {
-        const res = await fetch('/api/dashboard/stats');
-        const data = await res.json();
+        const data = await Api.dashboard.getStats();
         const conteo = data.en_planta ?? 0;
         document.getElementById('badgeEnPlantaCount').textContent = conteo;
     } catch (e) {

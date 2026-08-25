@@ -4,8 +4,7 @@
 async function cargarTablaVisitantes() {
     const q = document.getElementById('inputBuscarVisitantesTabla')?.value || '';
     try {
-        const res = await fetch(`/api/visitantes?q=${encodeURIComponent(q)}`);
-        const visitantes = await res.json();
+        const visitantes = await Api.visitantes.getAll(q);
         const tbody = document.getElementById('tbodyVisitantes');
 
         if (!visitantes.length) {
@@ -50,7 +49,7 @@ async function abrirModalEditarVisitante(id) {
         document.getElementById('editVisitanteTelefono').value = v.telefono || '';
         document.getElementById('editVisitanteEps').value = v.eps;
         document.getElementById('modalEditarVisitante').classList.remove('hidden');
-    } catch (e) { alert('Error cargando datos del visitante.'); }
+    } catch (e) { Toast.error('Error cargando datos del visitante.'); }
 }
 
 async function guardarEdicionVisitante(e) {
@@ -65,13 +64,9 @@ async function guardarEdicionVisitante(e) {
     };
 
     try {
-        const res = await fetch(`/api/visitantes/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const res = await Api.visitantes.editar(id, payload);
         if (!res.ok) throw new Error((await res.json()).error);
         cerrarModal('modalEditarVisitante');
         cargarTablaVisitantes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
+    } catch (err) { Toast.error('Error: ' + err.message); }
 }

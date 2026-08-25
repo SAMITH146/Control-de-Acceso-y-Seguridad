@@ -1,66 +1,38 @@
-// backend/controllers/empleadosController.js
-const db = require('../db');
+﻿// backend/controllers/empleadosController.js
+const empleadosService = require('../services/empleadosService');
 
-exports.getEmpleadosActivos = async (req, res) => {
-    try {
-        const [empleados] = await db.execute(`
-            SELECT e.id_empleado, e.id_area, CONCAT(e.nombres, ' ', e.apellidos) AS nombre_completo, e.cargo, a.nombre_area
-            FROM empleados e
-            INNER JOIN areas a ON e.id_area = a.id_area
-            WHERE e.estado_activo = 1 AND a.estado_activo = 1
-            ORDER BY e.apellidos
-        `);
-        res.json(empleados);
-    } catch (err) {
-        console.error('Error en getEmpleadosActivos:', err);
-        res.status(500).json({ error: 'Error cargando empleados' });
-    }
+exports.getEmpleadosActivos = async (req, res, next) => {
+    try { res.json(await empleadosService.getActivos()); } catch (err) { next(err); }
 };
 
-exports.getEmpleadosTodos = async (req, res) => {
-    try {
-        const [empleados] = await db.execute(`
-            SELECT e.*, a.nombre_area FROM empleados e
-            INNER JOIN areas a ON e.id_area = a.id_area ORDER BY e.apellidos
-        `);
-        res.json(empleados);
-    } catch (err) {
-        res.status(500).json({ error: 'Error cargando empleados' });
-    }
+exports.getEmpleadosTodos = async (req, res, next) => {
+    try { res.json(await empleadosService.getTodos()); } catch (err) { next(err); }
 };
 
-exports.getEmpleadoById = async (req, res) => {
+exports.getEmpleadoById = async (req, res, next) => {
     try {
-        const [rows] = await db.execute(`SELECT * FROM empleados WHERE id_empleado = ?`, [req.params.id]);
-        if (!rows.length) return res.status(404).json({ error: 'Empleado no encontrado' });
-        res.json(rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: 'Error cargando empleado' });
-    }
+        const emp = await empleadosService.getById(req.params.id);
+        if (!emp) return res.status(404).json({ error: 'Empleado no encontrado' });
+        res.json(emp);
+    } catch (err) { next(err); }
 };
 
-exports.createEmpleado = async (req, res) => {
-    const { tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo } = req.body;
+exports.createEmpleado = async (req, res, next) => {
     try {
-        await db.execute(`
-            INSERT INTO empleados (tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `, [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto || null, estado_activo ?? 1]);
+        await empleadosService.crear(req.body);
         res.json({ mensaje: 'Empleado creado exitosamente' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese documento o email' });
-        res.status(500).json({ error: 'Error creando empleado: ' + err.message });
+        next(err);
     }
 };
 
-exports.updateEmpleado = async (req, res) => {
-    const { tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo } = req.body;
+exports.updateEmpleado = async (req, res, next) => {
     try {
-        await db.execute(`
-            UPDATE empleados SET tipo_documento=?, numero_documento=?, nombres=?, apellidos=?, cargo=?, id_area=?, email_corporativo=?, telefono_contacto=?, estado_activo=? WHERE id_empleado=?
-        `, [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto || null, estado_activo, req.params.id]);
+        await empleadosService.actualizar(req.params.id, req.body);
         res.json({ mensaje: 'Empleado actualizado exitosamente' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese documento o email' });
-        res.status(500).json({ error: 'Error actualizando empleado: ' + err.message });
+        next(err);
     }
 };

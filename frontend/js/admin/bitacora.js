@@ -7,11 +7,8 @@ async function cargarTablaBitacora() {
     const estado = document.getElementById('filtroBitacoraEstado')?.value || '';
     const buscar = document.getElementById('filtroBitacoraBuscar')?.value || '';
 
-    const url = `/api/bitacora?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}&estado=${encodeURIComponent(estado)}&buscar=${encodeURIComponent(buscar)}`;
-
     try {
-        const res = await fetch(url);
-        const bitacora = await res.json();
+        const bitacora = await Api.bitacora.getAll({ desde, hasta, estado, buscar });
         const tbody = document.getElementById('tbodyBitacora');
 
         if (!bitacora.length) {
@@ -117,7 +114,7 @@ function aplicarRangoRapido(tipo, btn) {
 // =============================================================================
 async function exportarBitacoraExcel() {
     if (typeof XLSX === 'undefined') {
-        alert('Cargando módulo de Excel, intenta de nuevo en unos segundos...');
+        Toast.warning('Cargando módulo de Excel, intenta de nuevo en unos segundos...');
         return;
     }
 
@@ -126,14 +123,11 @@ async function exportarBitacoraExcel() {
     const estado = document.getElementById('filtroBitacoraEstado')?.value || '';
     const buscar = document.getElementById('filtroBitacoraBuscar')?.value || '';
 
-    const url = `/api/bitacora?desde=${encodeURIComponent(desde)}&hasta=${encodeURIComponent(hasta)}&estado=${encodeURIComponent(estado)}&buscar=${encodeURIComponent(buscar)}`;
-
     try {
-        const res = await fetch(url);
-        const bitacora = await res.json();
+        const bitacora = await Api.bitacora.getAll({ desde, hasta, estado, buscar });
 
         if (!bitacora || !bitacora.length) {
-            alert('No hay registros de visitas para exportar con los filtros seleccionados.');
+            Toast.info('No hay registros de visitas para exportar con los filtros seleccionados.');
             return;
         }
 
@@ -209,6 +203,6 @@ async function exportarBitacoraExcel() {
 
     } catch (e) {
         console.error('Error exportando Excel:', e);
-        alert('Ocurrió un error al generar el archivo Excel.');
+        Toast.error('Ocurrió un error al generar el archivo Excel.');
     }
 }

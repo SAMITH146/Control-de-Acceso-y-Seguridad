@@ -5,6 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
 const db = require('./db'); // keep db connection available if needed in middleware
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -50,6 +51,9 @@ if (require.main === module) {
         console.log('=================================================');
     });
 }
+
+// Middleware global de errores (debe ir DESPUÉS de todas las rutas)
+app.use(errorHandler);
 
 module.exports = app;
 

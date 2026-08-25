@@ -4,7 +4,7 @@
 
 function abrirModalSolicitarDesbloqueoDesdeAlerta() {
     if (!datosVetadoActual) {
-        alert('No se encontraron los datos del visitante sancionado.');
+        Toast.warning('No se encontraron los datos del visitante sancionado.');
         return;
     }
     abrirModalSolicitarDesbloqueo(
@@ -36,19 +36,15 @@ async function enviarSolicitudDesbloqueo(e) {
     const motivoSolicitud = document.getElementById('solicitudMotivoRazon').value.trim();
 
     if (!motivoSolicitud) {
-        alert('Por favor ingresa la justificación o razón para solicitar el desbloqueo.');
+        Toast.warning('Por favor ingresa la justificación o razón para solicitar el desbloqueo.');
         return;
     }
 
     try {
-        const res = await fetch('/api/solicitudes-desbloqueo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_lista_negra: idListaNegra,
-                id_visitante: idVisitante,
-                motivo_solicitud: motivoSolicitud
-            })
+        const res = await Api.solicitudesDesbloqueo.crear({
+            id_lista_negra: idListaNegra,
+            id_visitante: idVisitante,
+            motivo_solicitud: motivoSolicitud
         });
 
         const contentType = res.headers.get('content-type');
@@ -60,13 +56,13 @@ async function enviarSolicitudDesbloqueo(e) {
         }
 
         if (res.ok) {
-            alert('✅ ' + (data.mensaje || 'Solicitud enviada exitosamente al Administrador.'));
+            Toast.success(data.mensaje || 'Solicitud enviada exitosamente al Administrador.');
             cerrarModalSolicitarDesbloqueo();
         } else {
-            alert('❌ ' + (data.error || 'No se pudo enviar la solicitud.'));
+            Toast.error(data.error || 'No se pudo enviar la solicitud.');
         }
     } catch (err) {
-        alert('❌ Error de conexión al enviar la solicitud: ' + err.message);
+        Toast.error('Error de conexión al enviar la solicitud: ' + err.message);
     }
 }
 
@@ -111,8 +107,7 @@ async function autocompletarNombreBloqueo() {
     }
 
     try {
-        const res = await fetch(`/api/visitantes/buscar?documento=${encodeURIComponent(doc)}`);
-        const data = await res.json();
+        const data = await Api.visitantes.buscarPorDocumento(doc);
 
         if (data.visitante) {
             inputIdVis.value = data.visitante.id_visitante;
@@ -172,20 +167,16 @@ async function enviarSolicitudBloqueo(e) {
     const motivo = document.getElementById('solicitudBloqueoMotivoRazon').value.trim();
 
     if (!numDoc || !nombre || !motivo) {
-        alert('Por favor completa todos los campos del reporte.');
+        Toast.warning('Por favor completa todos los campos del reporte.');
         return;
     }
 
     try {
-        const res = await fetch('/api/solicitudes-bloqueo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_visitante: idVisitante || null,
-                numero_documento: numDoc,
-                nombre_visitante: nombre,
-                motivo_solicitud: motivo
-            })
+        const res = await Api.solicitudesBloqueo.crear({
+            id_visitante: idVisitante || null,
+            numero_documento: numDoc,
+            nombre_visitante: nombre,
+            motivo_solicitud: motivo
         });
 
         const contentType = res.headers.get('content-type');
@@ -197,12 +188,12 @@ async function enviarSolicitudBloqueo(e) {
         }
 
         if (res.ok) {
-            alert('✅ ' + (data.mensaje || 'Solicitud de veto enviada al Administrador exitosamente.'));
+            Toast.success(data.mensaje || 'Solicitud de veto enviada al Administrador exitosamente.');
             cerrarModalSolicitarBloqueo();
         } else {
-            alert('❌ ' + (data.error || 'No se pudo enviar la solicitud de bloqueo.'));
+            Toast.error(data.error || 'No se pudo enviar la solicitud de bloqueo.');
         }
     } catch (err) {
-        alert('❌ Error de conexión al enviar reporte: ' + err.message);
+        Toast.error('Error de conexión al enviar reporte: ' + err.message);
     }
 }

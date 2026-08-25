@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarTablaEmpleados() {
     try {
-        const res = await fetch('/api/empleados/all');
-        const empleados = await res.json();
+        const empleados = await Api.empleados.getAllAdmin();
         const tbody = document.getElementById('tbodyEmpleados');
 
         if (!empleados.length) {
@@ -50,8 +49,7 @@ async function abrirModalEmpleado() {
 
 async function editarEmpleado(id) {
     try {
-        const res = await fetch(`/api/empleados/${id}`);
-        const em = await res.json();
+        const em = await Api.empleados.getById(id);
         await cargarSelectAreasModal();
 
         document.getElementById('empleadoId').value = em.id_empleado;
@@ -66,12 +64,11 @@ async function editarEmpleado(id) {
         document.getElementById('empleadoEstado').value = em.estado_activo;
         document.getElementById('modalEmpleadoTitulo').innerHTML = '<i class="ph ph-pencil"></i> Editar Empleado';
         document.getElementById('modalEmpleado').classList.remove('hidden');
-    } catch (e) { alert('Error cargando datos del empleado.'); }
+    } catch (e) { Toast.error('Error cargando datos del empleado.'); }
 }
 
 async function cargarSelectAreasModal() {
-    const res = await fetch('/api/areas');
-    const areas = await res.json();
+    const areas = await Api.areas.getAll();
     const select = document.getElementById('empleadoArea');
     select.innerHTML = '<option value="">-- Selecciona el área --</option>';
     areas.forEach(a => {
@@ -95,16 +92,10 @@ async function guardarEmpleado(e) {
     };
 
     try {
-        const metodo = id ? 'PUT' : 'POST';
-        const url = id ? `/api/empleados/${id}` : '/api/empleados';
-        const res = await fetch(url, {
-            method: metodo,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const res = id ? await Api.empleados.editar(id, payload) : await Api.empleados.crear(payload);
         if (!res.ok) throw new Error((await res.json()).error);
         cerrarModal('modalEmpleado');
         cargarTablaEmpleados();
         cargarSelectEmpleados();
-    } catch (err) { alert('❌ Error: ' + err.message); }
+    } catch (err) { Toast.error('Error: ' + err.message); }
 }

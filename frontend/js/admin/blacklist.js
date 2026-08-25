@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarTablaListaNegra() {
     try {
-        const res = await fetch('/api/lista-negra');
-        const lista = await res.json();
+        const lista = await Api.listaNegra.getAll();
         const tbody = document.getElementById('tbodyListaNegra');
 
         if (!lista.length) {
@@ -41,16 +40,16 @@ async function cargarTablaListaNegra() {
 async function eliminarSancionListaNegra(id) {
     if (!confirm('¿Estás seguro de que deseas eliminar este registro de la lista negra permanentemente?')) return;
     try {
-        const res = await fetch(`/api/lista-negra/${id}`, { method: 'DELETE' });
+        const res = await Api.listaNegra.eliminar(id);
         const data = await res.json();
         if (res.ok) {
-            alert('✅ ' + (data.mensaje || 'Registro eliminado'));
+            Toast.success(data.mensaje || 'Registro eliminado');
             cargarTablaListaNegra();
         } else {
-            alert('❌ Error: ' + (data.error || 'No se pudo eliminar el registro'));
+            Toast.error('Error: ' + (data.error || 'No se pudo eliminar el registro'));
         }
     } catch (e) {
-        alert('❌ Error eliminando registro: ' + e.message);
+        Toast.error('Error eliminando registro: ' + e.message);
     }
 }
 
@@ -80,16 +79,12 @@ async function confirmarBloqueo(e) {
     const motivo = document.getElementById('bloquearMotivo').value;
 
     try {
-        const res = await fetch('/api/lista-negra/bloquear', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_visitante: idVisitante || null,
-                numero_documento: numeroDoc || null,
-                nombre_visitante: nombreVis || null,
-                motivo_bloqueo: motivo,
-                id_usuario_registro: usuarioActivo.id_usuario
-            })
+        const res = await Api.listaNegra.bloquear({
+            id_visitante: idVisitante || null,
+            numero_documento: numeroDoc || null,
+            nombre_visitante: nombreVis || null,
+            motivo_bloqueo: motivo,
+            id_usuario_registro: usuarioActivo.id_usuario
         });
 
         if (!res.ok) throw new Error((await res.json()).error);
@@ -98,7 +93,7 @@ async function confirmarBloqueo(e) {
         cargarDashboard();
         cargarTablaListaNegra();
         cargarTablaVisitantes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
+    } catch (err) { Toast.error('Error: ' + err.message); }
 }
 
 function abrirModalDesbloquear(idListaNegra, nombre) {
@@ -114,13 +109,9 @@ async function confirmarDesbloqueo(e) {
     const motivo = document.getElementById('desbloquearMotivo').value;
 
     try {
-        const res = await fetch(`/api/lista-negra/desbloquear/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                motivo_desbloqueo: motivo,
-                id_usuario_desbloqueo: usuarioActivo.id_usuario
-            })
+        const res = await Api.listaNegra.desbloquear(id, {
+            motivo_desbloqueo: motivo,
+            id_usuario_desbloqueo: usuarioActivo.id_usuario
         });
 
         if (!res.ok) throw new Error((await res.json()).error);
@@ -129,5 +120,5 @@ async function confirmarDesbloqueo(e) {
         cargarDashboard();
         cargarTablaListaNegra();
         cargarTablaVisitantes();
-    } catch (err) { alert('❌ Error: ' + err.message); }
+    } catch (err) { Toast.error('Error: ' + err.message); }
 }

@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarDashboard() {
     try {
-        const res = await fetch('/api/dashboard/stats');
-        const datos = await res.json();
+        const datos = await Api.dashboard.getStats();
 
         const stats = datos.stats || datos;
         const listaPlanta = datos.plantaList || datos.visitantes_en_planta || [];

@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarTablaVisitasActivas() {
     try {
-        const res = await fetch('/api/visitas/activas');
-        const visitas = await res.json();
+        const visitas = await Api.visitas.getActivas();
         const tbody = document.getElementById('tbodyVisitasActivas');
 
         if (!visitas.length) {
@@ -47,13 +46,9 @@ async function confirmarSalida(e) {
     const observaciones = document.getElementById('salidaObservaciones').value;
 
     try {
-        const res = await fetch(`/api/visitas/salida/${idVisita}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_escolta_salida: usuarioActivo.id_usuario,
-                observaciones_salida: observaciones
-            })
+        const res = await Api.visitas.registrarSalida(idVisita, {
+            id_escolta_salida: usuarioActivo.id_usuario,
+            observaciones_salida: observaciones
         });
 
         if (!res.ok) throw new Error((await res.json()).error);
@@ -62,6 +57,6 @@ async function confirmarSalida(e) {
         cargarDashboard();
         cargarTablaVisitasActivas();
     } catch (err) {
-        alert('❌ Error al registrar salida: ' + err.message);
+        Toast.error('Error al registrar salida: ' + err.message);
     }
 }

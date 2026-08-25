@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarTablaUsuarios() {
     try {
-        const res = await fetch('/api/usuarios');
-        const usuarios = await res.json();
+        const usuarios = await Api.usuarios.getAll();
         const tbody = document.getElementById('tbodyUsuarios');
 
         if (!usuarios.length) {
@@ -46,21 +45,17 @@ async function toggleEstadoUsuario(id, estadoActual, username) {
     }
 
     try {
-        const res = await fetch(`/api/usuarios/${id}/toggle-estado`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ estado_activo: nuevoEstado })
-        });
+        const res = await Api.usuarios.toggleEstado(id);
 
         const data = await res.json();
         if (res.ok) {
-            alert(data.mensaje || 'Acción procesada correctamente.');
+            Toast.success(data.mensaje || 'Acción procesada correctamente.');
             cargarTablaUsuarios();
         } else {
-            alert('❌ ' + (data.error || 'No se pudo cambiar el estado.'));
+            Toast.error(data.error || 'No se pudo cambiar el estado.');
         }
     } catch (err) {
-        alert('❌ Error al cambiar estado: ' + err.message);
+        Toast.error('Error al cambiar estado: ' + err.message);
     }
 }
 
@@ -70,20 +65,17 @@ async function eliminarUsuario(id, username) {
     }
 
     try {
-        const res = await fetch(`/api/usuarios/${id}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        });
+        const res = await Api.usuarios.eliminar(id);
 
         const data = await res.json();
         if (res.ok) {
-            alert(data.mensaje || '🗑️ Usuario eliminado exitosamente.');
+            Toast.success(data.mensaje || 'Usuario eliminado exitosamente.');
             cargarTablaUsuarios();
         } else {
-            alert('❌ ' + (data.error || 'No se pudo eliminar el usuario.'));
+            Toast.error(data.error || 'No se pudo eliminar el usuario.');
         }
     } catch (err) {
-        alert('❌ Error al eliminar usuario: ' + err.message);
+        Toast.error('Error al eliminar usuario: ' + err.message);
     }
 }
 
@@ -102,8 +94,7 @@ function abrirModalUsuario() {
 
 async function editarUsuario(id) {
     try {
-        const res = await fetch(`/api/usuarios/${id}`);
-        const u = await res.json();
+        const u = await Api.usuarios.getById(id);
         document.getElementById('usuarioId').value = u.id_usuario;
         document.getElementById('usuarioNombreCompleto').value = u.nombre_completo || '';
         document.getElementById('usuarioNumeroDocumento').value = u.numero_documento || '';
@@ -114,7 +105,7 @@ async function editarUsuario(id) {
         document.getElementById('usuarioEstado').value = u.estado_activo;
         document.getElementById('modalUsuarioTitulo').innerHTML = '<i class="ph ph-pencil"></i> Editar Usuario';
         document.getElementById('modalUsuario').classList.remove('hidden');
-    } catch (e) { alert('Error cargando datos del usuario.'); }
+    } catch (e) { Toast.error('Error cargando datos del usuario.'); }
 }
 
 async function guardarUsuario(e) {
@@ -132,18 +123,12 @@ async function guardarUsuario(e) {
     if (password) payload.password_hash = password;
 
     try {
-        const metodo = id ? 'PUT' : 'POST';
-        const url = id ? `/api/usuarios/${id}` : '/api/usuarios';
-        const res = await fetch(url, {
-            method: metodo,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const res = id ? await Api.usuarios.editar(id, payload) : await Api.usuarios.crear(payload);
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
 
-        alert(data.mensaje || '✅ Usuario guardado exitosamente.');
+        Toast.success(data.mensaje || 'Usuario guardado exitosamente.');
         cerrarModal('modalUsuario');
         cargarTablaUsuarios();
-    } catch (err) { alert(err.message); }
+    } catch (err) { Toast.error(err.message); }
 }

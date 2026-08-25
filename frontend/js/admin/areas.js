@@ -3,8 +3,7 @@
 // =============================================================================
 async function cargarTablaAreas() {
     try {
-        const res = await fetch('/api/areas/all');
-        const areas = await res.json();
+        const areas = await Api.areas.getAllAdmin();
         const tbody = document.getElementById('tbodyAreas');
 
         if (!areas.length) {
@@ -47,7 +46,7 @@ async function editarArea(id) {
         document.getElementById('areaEstado').value = area.estado_activo;
         document.getElementById('modalAreaTitulo').innerHTML = '<i class="ph ph-pencil"></i> Editar Área';
         document.getElementById('modalArea').classList.remove('hidden');
-    } catch (e) { alert('Error cargando datos del área.'); }
+    } catch (e) { Toast.error('Error cargando datos del área.'); }
 }
 
 async function guardarArea(e) {
@@ -60,16 +59,10 @@ async function guardarArea(e) {
     };
 
     try {
-        const metodo = id ? 'PUT' : 'POST';
-        const url = id ? `/api/areas/${id}` : '/api/areas';
-        const res = await fetch(url, {
-            method: metodo,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        const res = id ? await Api.areas.editar(id, payload) : await Api.areas.crear(payload);
         if (!res.ok) throw new Error((await res.json()).error);
         cerrarModal('modalArea');
         cargarTablaAreas();
         cargarSelectAreas();
-    } catch (err) { alert('❌ Error: ' + err.message); }
+    } catch (err) { Toast.error('Error: ' + err.message); }
 }

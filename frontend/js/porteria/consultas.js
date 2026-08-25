@@ -5,8 +5,7 @@
 async function buscarEnListaNegraPorteria() {
     const q = document.getElementById('inputBuscarListaNegraPorteria')?.value.toLowerCase().trim() || '';
     try {
-        const res = await fetch('/api/lista-negra');
-        const lista = await res.json();
+        const lista = await Api.listaNegra.getAll();
         const tbody = document.getElementById('tbodyListaNegraPorteria');
 
         const filtrados = lista.filter(item => {
@@ -41,8 +40,7 @@ async function buscarEnListaNegraPorteria() {
 async function cargarMiTurno() {
     const hoy = new Date().toISOString().split('T')[0];
     try {
-        const res = await fetch(`/api/bitacora?desde=${hoy}&hasta=${hoy}`);
-        const bitacora = await res.json();
+        const bitacora = await Api.bitacora.getAll({ desde: hoy, hasta: hoy });
         const tbody = document.getElementById('tbodyMiTurno');
 
         if (!bitacora.length) {

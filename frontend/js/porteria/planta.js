@@ -4,8 +4,7 @@
 
 async function cargarVisitasEnPlantaPorteria() {
     try {
-        const res = await fetch('/api/visitas/activas');
-        const visitas = await res.json();
+        const visitas = await Api.visitas.getActivas();
         listaVisitasEnPlantaCache = visitas;
         renderTablaPlanta(visitas);
         document.getElementById('badgeEnPlantaCount').textContent = visitas.length;
@@ -80,13 +79,9 @@ async function ejecutarSalidaPorteria(e) {
     const obs = document.getElementById('salidaPorteriaObs').value;
 
     try {
-        const res = await fetch(`/api/visitas/salida/${idVisita}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_escolta_salida: usuarioActivo.id_usuario,
-                observaciones_salida: obs
-            })
+        const res = await Api.visitas.registrarSalida(idVisita, {
+            id_escolta_salida: usuarioActivo.id_usuario,
+            observaciones_salida: obs
         });
 
         if (!res.ok) throw new Error((await res.json()).error);
@@ -95,6 +90,6 @@ async function ejecutarSalidaPorteria(e) {
         cargarVisitasEnPlantaPorteria();
         actualizarConteoEnPlanta();
     } catch (err) {
-        alert('❌ Error al registrar salida: ' + err.message);
+        Toast.error('Error al registrar salida: ' + err.message);
     }
 }

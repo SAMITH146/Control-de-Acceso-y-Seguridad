@@ -1,54 +1,44 @@
-// backend/controllers/areasController.js
-const db = require('../db');
+﻿// backend/controllers/areasController.js
+const areasService = require('../services/areasService');
 
-exports.getAreasActivas = async (req, res) => {
+exports.getAreasActivas = async (req, res, next) => {
     try {
-        const [areas] = await db.execute(`SELECT id_area, nombre_area FROM areas WHERE estado_activo = 1 ORDER BY nombre_area`);
+        const areas = await areasService.getActivas();
         res.json(areas);
-    } catch (err) {
-        res.status(500).json({ error: 'Error cargando áreas' });
-    }
+    } catch (err) { next(err); }
 };
 
-exports.getAreasTodas = async (req, res) => {
+exports.getAreasTodas = async (req, res, next) => {
     try {
-        const [areas] = await db.execute(`SELECT * FROM areas ORDER BY nombre_area`);
+        const areas = await areasService.getTodas();
         res.json(areas);
+    } catch (err) { next(err); }
+};
+
+exports.getAreaById = async (req, res, next) => {
+    try {
+        const area = await areasService.getById(req.params.id);
+        if (!area) return res.status(404).json({ error: 'Area no encontrada' });
+        res.json(area);
+    } catch (err) { next(err); }
+};
+
+exports.createArea = async (req, res, next) => {
+    try {
+        await areasService.crear(req.body);
+        res.json({ mensaje: 'Area creada exitosamente' });
     } catch (err) {
-        res.status(500).json({ error: 'Error cargando áreas' });
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un area con ese nombre' });
+        next(err);
     }
 };
 
-exports.getAreaById = async (req, res) => {
+exports.updateArea = async (req, res, next) => {
     try {
-        const [rows] = await db.execute(`SELECT * FROM areas WHERE id_area = ?`, [req.params.id]);
-        if (!rows.length) return res.status(404).json({ error: 'Área no encontrada' });
-        res.json(rows[0]);
+        await areasService.actualizar(req.params.id, req.body);
+        res.json({ mensaje: 'Area actualizada exitosamente' });
     } catch (err) {
-        res.status(500).json({ error: 'Error cargando área' });
-    }
-};
-
-exports.createArea = async (req, res) => {
-    const { nombre_area, descripcion, estado_activo } = req.body;
-    try {
-        await db.execute(`INSERT INTO areas (nombre_area, descripcion, estado_activo) VALUES (?, ?, ?)`,
-            [nombre_area, descripcion || null, estado_activo ?? 1]);
-        res.json({ mensaje: 'Área creada exitosamente' });
-    } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un área con ese nombre' });
-        res.status(500).json({ error: 'Error creando área: ' + err.message });
-    }
-};
-
-exports.updateArea = async (req, res) => {
-    const { nombre_area, descripcion, estado_activo } = req.body;
-    try {
-        await db.execute(`UPDATE areas SET nombre_area = ?, descripcion = ?, estado_activo = ? WHERE id_area = ?`,
-            [nombre_area, descripcion || null, estado_activo, req.params.id]);
-        res.json({ mensaje: 'Área actualizada exitosamente' });
-    } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un área con ese nombre' });
-        res.status(500).json({ error: 'Error actualizando área: ' + err.message });
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un area con ese nombre' });
+        next(err);
     }
 };
