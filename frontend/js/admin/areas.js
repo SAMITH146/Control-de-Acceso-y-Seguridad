@@ -63,6 +63,5 @@ async function guardarArea(e) {
         if (!res.ok) throw new Error((await res.json()).error);
         cerrarModal('modalArea');
         cargarTablaAreas();
-        cargarSelectAreas();
     } catch (err) { Toast.error('Error: ' + err.message); }
 }

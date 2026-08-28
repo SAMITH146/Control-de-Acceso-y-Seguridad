@@ -96,6 +96,5 @@ async function guardarEmpleado(e) {
         if (!res.ok) throw new Error((await res.json()).error);
         cerrarModal('modalEmpleado');
         cargarTablaEmpleados();
-        cargarSelectEmpleados();
     } catch (err) { Toast.error('Error: ' + err.message); }
 }
