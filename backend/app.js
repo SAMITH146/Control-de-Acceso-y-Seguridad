@@ -2,7 +2,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const morgan = require('morgan');
 const path = require('path');
 const db = require('./db'); // keep db connection available if needed in middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -13,7 +12,6 @@ const PORT = process.env.PORT || 3000;
 // Global middlewares
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
