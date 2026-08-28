@@ -32,7 +32,7 @@ function renderTablaPlanta(visitas) {
             <td><strong style="color:${v.minutos_en_planta > 120 ? '#dc2626' : '#0E773A'};">${formatearMinutos(v.minutos_en_planta)}</strong></td>
             <td style="max-width:200px;font-size:0.82rem;">${v.objetos_ingresados || 'Ninguno'}</td>
             <td>
-                <button class="btn-dar-salida" onclick="abrirModalSalidaPorteria(${v.id_visita}, '${(v.visitante||'').replace(/['"]/g, ' ')}', '${(v.objetos_ingresados || 'Ninguno').replace(/['"\n\r]/g, ' ')}')">
+                <button class="btn-dar-salida" data-id="${v.id_visita}" data-nombre="${(v.visitante||'').replace(/"/g, '&quot;')}" data-objetos="${(v.objetos_ingresados || 'Ninguno').replace(/"/g, '&quot;')}" onclick="abrirModalSalidaPorteria(this.dataset.id, this.dataset.nombre, this.dataset.objetos)">
                     <i class="ph ph-sign-out"></i> Dar Salida
                 </button>
             </td>

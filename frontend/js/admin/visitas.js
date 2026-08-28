@@ -23,7 +23,7 @@ async function cargarTablaVisitasActivas() {
                 <td><span style="color:${v.minutos_en_planta > 120 ? '#dc2626' : '#0E773A'};font-weight:700;">${formatearTiempo(v.minutos_en_planta)}</span></td>
                 <td style="max-width:200px;font-size:0.82rem;">${v.objetos_ingresados ?? '—'}</td>
                 <td>
-                    <button class="btn-accion btn-salida" onclick="abrirModalSalida(${v.id_visita}, '${(v.visitante||'').replace(/['"]/g, ' ')}', '${(v.objetos_ingresados || 'Ninguno').replace(/['"\n\r]/g, ' ')}')">
+                    <button class="btn-accion btn-salida" data-id="${v.id_visita}" data-nombre="${(v.visitante||'').replace(/"/g, '&quot;')}" data-objetos="${(v.objetos_ingresados || 'Ninguno').replace(/"/g, '&quot;')}" onclick="abrirModalSalida(this.dataset.id, this.dataset.nombre, this.dataset.objetos)">
                         <i class="ph ph-sign-out"></i> Registrar Salida
                     </button>
                 </td>
