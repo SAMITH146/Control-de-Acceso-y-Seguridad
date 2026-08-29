@@ -143,6 +143,7 @@ async function registrarEntradaPorteria(e) {
     btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Registrando ingreso...';
     btn.disabled = true;
 
+    
     const payload = {
         id_visitante_existente: idVisitanteEncontrado,
         tipo_documento: document.getElementById('ingresoTipoDoc').value,
@@ -157,7 +158,13 @@ async function registrarEntradaPorteria(e) {
         id_escolta_ingreso: usuarioActivo.id_usuario
     };
 
-    try {
+    if (!payload.id_empleado_visita) {
+        Toast.error('Debes seleccionar un Empleado (Anfitrión). Si no hay empleados, no puedes registrar el ingreso a esa área.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        return;
+    }
+try {
         const res = await Api.visitas.registrarIngreso(payload);
         const result = await res.json();
 
