@@ -29,13 +29,13 @@ exports.getById = async (id) => {
 exports.crear = async ({ tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo }) => {
     await db.execute(
         `INSERT INTO empleados (tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto || null, estado_activo ?? 1]
+        [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo || null, telefono_contacto || null, estado_activo ?? 1]
     );
 };
 
 exports.actualizar = async (id, { tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto, estado_activo }) => {
     await db.execute(
         `UPDATE empleados SET tipo_documento=?, numero_documento=?, nombres=?, apellidos=?, cargo=?, id_area=?, email_corporativo=?, telefono_contacto=?, estado_activo=? WHERE id_empleado=?`,
-        [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo, telefono_contacto || null, estado_activo, id]
+        [tipo_documento, numero_documento, nombres, apellidos, cargo, id_area, email_corporativo || null, telefono_contacto || null, estado_activo, id]
     );
 };

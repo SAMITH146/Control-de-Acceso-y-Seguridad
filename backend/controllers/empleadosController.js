@@ -22,7 +22,7 @@ exports.createEmpleado = async (req, res, next) => {
         await empleadosService.crear(req.body);
         res.json({ mensaje: 'Empleado creado exitosamente' });
     } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese documento o email' });
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese número de documento.' });
         next(err);
     }
 };
@@ -32,7 +32,7 @@ exports.updateEmpleado = async (req, res, next) => {
         await empleadosService.actualizar(req.params.id, req.body);
         res.json({ mensaje: 'Empleado actualizado exitosamente' });
     } catch (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese documento o email' });
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ error: 'Ya existe un empleado con ese número de documento.' });
         next(err);
     }
 };
